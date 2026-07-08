@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistem Manajemen & Inspeksi APAR - PT Kereta Api Indonesia (Persero)</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/landing.css">
+</head>
+<body>
+
+<!-- =========================
+     NAVBAR
+     ========================= -->
+<nav class="navbar navbar-expand-lg navbar-light kai-navbar fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <img src="assets/img/logo kai.png" alt="KAI Logo" height="45">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menu">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#home">Beranda</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#statistik">Statistik</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#fitur">Fitur</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#panduan">Panduan</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#darurat">Darurat</a>
+                </li>
+                <li class="nav-item ms-lg-3">
+                    <a class="btn btn-kai" href="login.html">
+                        <i class="fas fa-right-to-bracket me-1"></i> Login
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- =========================
+     HERO SECTION
+     ========================= -->
+<section id="home" class="hero">
+    <div class="overlay"></div>
+
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-shield-halved"></i>
+                        Sistem Resmi PT Kereta Api Indonesia (Persero)
+                    </div>
+
+                    <h1>
+                        Sistem Manajemen & Inspeksi <span>APAR</span>
+                    </h1>
+
+                    <h2>PT Kereta Api Indonesia (Persero)</h2>
+
+                    <p>
+                        Platform digital terintegrasi untuk monitoring, pencatatan, dan manajemen 
+                        pemeriksaan Alat Pemadam Api Ringan (APAR) di seluruh lingkungan operasional 
+                        PT KAI — cepat, akurat, dan terdokumentasi.
+                    </p>
+
+                    <div class="hero-buttons">
+                        <a href="login.html" class="btn-kai-primary">
+                            <i class="fas fa-right-to-bracket"></i> Masuk Sistem
+                        </a>
+                        <a href="#panduan" class="btn-kai-outline">
+                            <i class="fas fa-book"></i> Panduan Penggunaan
+                        </a>
+                    </div>
+
+                    <!-- Emergency Banner -->
+                    <div class="hero-emergency-banner">
+                        <i class="fas fa-triangle-exclamation"></i>
+                        <span>Status Kedaruratan: 2 area stasiun memerlukan perhatian segera</span>
+                        <span class="emergency-badge">Lihat Detail</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="hero-visual">
+                    <img src="assets/img/hero_base_image.png" alt="Ilustrasi Kereta & APAR" class="hero-illustration">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================
+     REAL-TIME STATS SECTION
+     ========================= -->
+<section id="statistik" class="realtime-stats">
+    <div class="container">
+        <div class="section-title">
+            <span class="subtitle">Statistik Real-time</span>
+            <h2>Status APAR Seluruh Indonesia</h2>
+            <p>Data terkini kondisi Alat Pemadam Api Ringan di seluruh lingkungan operasional PT KAI</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-icon blue">
+                    <i class="fas fa-fire-extinguisher"></i>
+                </div>
+                <div class="stat-value">1.247</div>
+                <div class="stat-label">Total APAR Terdata</div>
+                <div class="stat-desc">Seluruh DAOP terdaftar</div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-icon green">
+                    <i class="fas fa-circle-check"></i>
+                </div>
+                <div class="stat-value updating">1.198</div>
+                <div class="stat-label">Kondisi Aman</div>
+                <div class="stat-desc">APAR siap pakai</div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-icon orange">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="stat-value">37</div>
+                <div class="stat-label">Dalam Perawatan</div>
+                <div class="stat-desc">Sedang servis berkala</div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-icon red">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-value">12</div>
+                <div class="stat-label">Perlu Tindakan</div>
+                <div class="stat-desc">Memerlukan perhatian segera</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================
+     FEATURES SECTION
+     ========================= -->
+<section id="fitur" class="features-section">
+    <div class="container">
+        <div class="section-title">
+            <span class="subtitle">Fitur Unggulan</span>
+            <h2>Mengapa Menggunakan Sistem Ini?</h2>
+            <p>Kemudahan dalam memantau dan mengelola pemeriksaan APAR di seluruh lingkungan PT KAI</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h5>Inspeksi Digital</h5>
+                    <p>Lakukan pencatatan pemeriksaan APAR secara digital tanpa formulir kertas. Data tersimpan aman dan terpusat.</p>
+                    <span class="feature-tag">Digitalisasi</span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h5>Pengingat Otomatis</h5>
+                    <p>Sistem mengirimkan notifikasi jadwal pemeriksaan berkala dan masa berlaku APAR yang akan habis.</p>
+                    <span class="feature-tag">Otomatis</span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h5>Laporan Kerusakan</h5>
+                    <p>Laporkan APAR rusak atau tidak layak pakai secara langsung. Tim K3 akan mendapat notifikasi tindak lanjut.</p>
+                    <span class="feature-tag">Responsif</span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <h5>Export & Cetak Laporan</h5>
+                    <p>Ekspor data pemeriksaan ke format Excel atau PDF untuk kebutuhan pelaporan dan dokumentasi.</p>
+                    <span class="feature-tag">Produktivitas</span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-location-dot"></i>
+                    </div>
+                    <h5>Monitoring Per Area</h5>
+                    <p>Pantau kondisi APAR berdasarkan DAOP, stasiun, atau lokasi spesifik dengan tampilan yang terstruktur.</p>
+                    <span class="feature-tag">Terstruktur</span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-screen"></i>
+                    </div>
+                    <h5>Akses Multi Perangkat</h5>
+                    <p>Akses sistem dari berbagai perangkat — desktop, tablet, maupun smartphone — kapan saja dan di mana saja.</p>
+                    <span class="feature-tag">Fleksibel</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================
+     EMERGENCY STATUS SECTION
+     ========================= -->
+<section id="darurat" class="emergency-section">
+    <div class="container">
+        <div class="section-title">
+            <span class="subtitle">Status Kedaruratan</span>
+            <h2>Area yang Memerlukan Perhatian</h2>
+            <p>Pantau area stasiun yang membutuhkan tindakan segera terkait ketersediaan APAR</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="emergency-alert-card">
+                    <div class="alert-header">
+                        <div class="alert-icon">
+                            <i class="fas fa-triangle-exclamation"></i>
+                        </div>
+                        <div class="alert-info">
+                            <h6>Peringatan Kedaruratan</h6>
+                            <p>Beberapa area stasiun memerlukan perhatian segera. Segera lakukan tindakan pengisian ulang atau penggantian APAR.</p>
+                        </div>
+                    </div>
+                    <div class="alert-body">
+                        <div class="emergency-list">
+                            <div class="emergency-item">
+                                <span class="e-status critical"></span>
+                                <div class="e-info">
+                                    <strong>Stasiun Gambir</strong>
+                                    <span>DAOP 1 - Jakarta • 3 APAR kedaluwarsa • Perlu penggantian segera</span>
+                                </div>
+                                <a href="login.html" class="e-action">Tindak Lanjut</a>
+                            </div>
+
+                            <div class="emergency-item">
+                                <span class="e-status"></span>
+                                <div class="e-info">
+                                    <strong>Stasiun Bandung</strong>
+                                    <span>DAOP 2 - Bandung • 2 APAR tekanan rendah • Perlu servis</span>
+                                </div>
+                                <a href="login.html" class="e-action">Tindak Lanjut</a>
+                            </div>
+
+                            <div class="emergency-item">
+                                <span class="e-status"></span>
+                                <div class="e-info">
+                                    <strong>Stasiun Semarang Tawang</strong>
+                                    <span>DAOP 4 - Semarang • 1 APAR hilang • Perlu pengadaan</span>
+                                </div>
+                                <a href="login.html" class="e-action">Tindak Lanjut</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================
+     GUIDE SECTION
+     ========================= -->
+<section id="panduan" class="guide-section">
+    <div class="container">
+        <div class="section-title">
+            <span class="subtitle">Panduan Penggunaan</span>
+            <h2>Cara Petugas Melakukan Pengecekan APAR</h2>
+            <p>Ikuti alur sederhana berikut untuk melakukan pencatatan dan pelaporan pemeriksaan APAR melalui sistem</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-3 col-6 guide-card-wrap">
+                <div class="guide-card">
+                    <div class="step-number">1</div>
+                    <i class="fas fa-right-to-bracket step-icon"></i>
+                    <h5>Login ke Sistem</h5>
+                    <p>Masuk menggunakan akun petugas yang telah terdaftar di sistem monitoring APAR</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-6 guide-card-wrap">
+                <div class="guide-card">
+                    <div class="step-number">2</div>
+                    <i class="fas fa-camera step-icon"></i>
+                    <h5>Inspeksi APAR</h5>
+                    <p>Lakukan pengecekan fisik APAR dan dokumentasikan kondisi melalui formulir digital</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-6 guide-card-wrap">
+                <div class="guide-card">
+                    <div class="step-number">3</div>
+                    <i class="fas fa-cloud-upload-alt step-icon"></i>
+                    <h5>Simpan Data</h5>
+                    <p>Data pemeriksaan tersimpan otomatis ke server dan dapat diakses kapan saja</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-6 guide-card-wrap">
+                <div class="guide-card">
+                    <div class="step-number">4</div>
+                    <i class="fas fa-print step-icon"></i>
+                    <h5>Cetak Laporan</h5>
+                    <p>Export data ke Excel atau cetak laporan untuk dokumentasi dan pelaporan</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================
+     CTA SECTION
+     ========================= -->
+<section class="cta-section">
+    <div class="cta-content">
+        <div class="container">
+            <h2>Siap Memulai Monitoring APAR?</h2>
+            <p>Bergabunglah dengan ratusan petugas K3 di seluruh Indonesia yang telah menggunakan sistem inspeksi APAR digital PT KAI.</p>
+            <a href="register.html" class="btn-cta">
+                <i class="fas fa-user-plus"></i> Daftar Sekarang
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- =========================
+     FOOTER
+     ========================= -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-5 mb-lg-0">
+                <div class="footer-brand">
+                    <img src="assets/img/logo kai.png" alt="PT KAI Logo">
+                </div>
+                <p class="footer-desc">
+                    Sistem Manajemen & Inspeksi APAR adalah platform digital resmi PT Kereta Api Indonesia (Persero) untuk monitoring, pencatatan, dan manajemen pemeriksaan Alat Pemadam Api Ringan di seluruh lingkungan operasional KAI.
+                </p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <h5>Navigasi</h5>
+                <ul class="footer-links">
+                    <li><a href="#home"><i class="fas fa-chevron-right"></i> Beranda</a></li>
+                    <li><a href="#statistik"><i class="fas fa-chevron-right"></i> Statistik</a></li>
+                    <li><a href="#fitur"><i class="fas fa-chevron-right"></i> Fitur</a></li>
+                    <li><a href="#panduan"><i class="fas fa-chevron-right"></i> Panduan</a></li>
+                    <li><a href="#darurat"><i class="fas fa-chevron-right"></i> Status Darurat</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+                <h5>Kontak Tim Terkait</h5>
+                <div class="footer-contact">
+                    <p><i class="fas fa-shield"></i> K9 & K3LH PT KAI</p>
+                    <p><i class="fas fa-building"></i> Manajemen Fasilitas</p>
+                    <p><i class="fas fa-phone"></i> (022) 123-4567</p>
+                    <p><i class="fas fa-envelope"></i> k3.apar@kai.id</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Jl. Perintis Kemerdekaan No. 1, Bandung</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <h5>Kebijakan & Tautan</h5>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Kebijakan Privasi</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Syarat & Ketentuan</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Standar Operasional</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Panduan Teknis APAR</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Pusat Bantuan</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 PT Kereta Api Indonesia (Persero). All rights reserved. v2.0.1</p>
+            <div class="footer-bottom-links">
+                <a href="#">Kebijakan Privasi</a>
+                <a href="#">Syarat & Ketentuan</a>
+                <a href="#">Hubungi Kami</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Smooth Scroll & Navbar Active -->
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if(target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+
+// Navbar active state on scroll
+window.addEventListener('scroll', function() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    let current = '';
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        if(window.scrollY >= sectionTop) {
+            current = section.getAttribute('id');
+        }
+    });
+
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if(link.getAttribute('href') === '#' + current) {
+            link.classList.add('active');
+        }
+    });
+});
+
+// Animated counter on scroll
+function animateCounters() {
+    const counters = document.querySelectorAll('.stat-value');
+    const speed = 200;
+    
+    counters.forEach(counter => {
+        const target = parseInt(counter.textContent.replace(/[^0-9]/g, ''));
+        if(isNaN(target)) return;
+        
+        const increment = target / speed;
+        let current = 0;
+        
+        const updateCounter = () => {
+            current += increment;
+            if(current < target) {
+                counter.textContent = Math.ceil(current);
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = target;
+            }
+        };
+        
+        updateCounter();
+    });
+}
+
+// Trigger counter animation when stats section is visible
+const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting) {
+            animateCounters();
+            statsObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.5 });
+
+const statsSection = document.querySelector('.realtime-stats');
+if(statsSection) {
+    statsObserver.observe(statsSection);
+}
+</script>
+
+</body>
+</html>

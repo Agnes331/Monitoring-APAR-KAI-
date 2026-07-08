@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Formulir Checklist Pemantauan APAR</title>
+<style>
+  @page { size: A4 landscape; margin: 10mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    color: #000;
+    margin: 0;
+  }
+  .page {
+    background: #fff;
+    margin: 0 auto;
+    padding: 20px 25px;
+  }
+
+  /* ===== HEADER ===== */
+  .header-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1.5px solid #000;
+    margin-bottom: 10px;
+  }
+  .header-table td {
+    border: 1.5px solid #000;
+    vertical-align: middle;
+    padding: 4px 8px;
+  }
+  .logo-cell {
+    width: 140px;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0!important;
+  }
+  .logo-kai {
+    border-bottom: 1.5px solid #000;
+  }
+
+  .logo-cell img { max-width: 75px; }
+  .logo-kai {
+    font-weight: bold;
+    font-size: 26px;
+    padding-top: .35rem;
+    letter-spacing: 1px;
+  }
+
+  .terbatas-box {
+    border: 2px solid #e4640c;
+    color: #e4640c;
+    display: inline-block;
+    padding: .20rem 1rem;
+    margin: .5rem 0;
+    font-size: 11pt;
+    font-weight: bold;
+  }
+  .title-cell {
+    text-align: center;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 0!important;
+  }
+  .title-cell .sub {
+    display: block;
+    font-size: 13px;
+    padding-bottom: .25rem;
+    font-weight: bold;
+    line-height: 1.5;
+    border-bottom: 1.5px solid #000;
+  }
+  .title-cell .form-title {
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: .8rem;
+    margin-bottom: .7rem;
+  }
+  .meta-label {
+    width: 110px;
+    font-size: 10px;
+    white-space: nowrap;
+    font-weight: bold;
+  }
+  .meta-value {
+    width: 160px;
+    font-size: 10px;
+    font-weight: bold;
+  }
+
+  /* ===== NO REF / TANGGAL / BUSINESS AREA BOX ===== */
+  .ref-table {
+    border-collapse: collapse;
+    margin-bottom: 6px;
+    font-size: 10px;
+  }
+  .ref-table td {
+    border: 1.5px solid #000;
+    padding: 2px 6px;
+  }
+  .ref-table .label { font-weight: normal; width: 110px; font-weight: bold; }
+  .ref-table .colon { width: 10px; text-align: center; font-weight: bold; }
+  .ref-table .val { width: 160px; }
+
+  .bulan-line {
+    font-size: 10px;
+    margin: 1rem 0 1rem 4px;
+  }
+  .bulan-line .dots {
+    display: inline-block;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    width: 200px;
+  }
+  .bulan-line strong {
+    margin-right: 5rem;
+  }
+
+  /* ===== MAIN TABLE ===== */
+  table.main {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5px;
+    table-layout: fixed;
+    overflow: hidden;
+  }
+  table.main th, table.main td {
+    border: 1.5px solid #000;
+    padding: .45rem .5rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+  table.main thead th {
+    font-weight: bold;
+    font-size: 9.5px;
+  }
+  table.main .subhead {
+    font-style: italic;
+    font-weight: normal;
+    font-size: 8.5px;
+  }
+  table.main td.body-row {
+    height: 26px;
+  }
+  .col-no { width: 28px; }
+  .col-kode { width: 60px; }
+  .col-merk { width: 70px; }
+  .col-tipe { width: 60px; }
+  .col-media { width: 90px; }
+  .col-kap { width: 60px; }
+  .col-lokasi { width: 90px; }
+  .col-waktu-cek { text-wrap: nowrap; width: 110px; }
+  .col-wpe { min-width: 45px; text-wrap:nowrap; }
+  .col-isiulang { width: 65px; }
+  .col-kadaluarsa { width: 65px; }
+  .col-indikator { width: 90px; }
+  .col-perlakuan { width: 100px; }
+  .col-tindak { width: 100px; }
+  .col-paraf { width: 65px; }
+
+  /* ===== CATATAN & TTD SECTION ===== */
+  .page1-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    page-break-inside: avoid;
+  }
+  .catatan-box {
+    border: 1.5px solid #000;
+    width: 60%;
+    min-height: 150px;
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+  .catatan-box .catatan-title {
+    font-weight: bold;
+  }
+  .catatan-title_red {
+    color: darkred;
+    font-weight: bold;
+  }
+  .ttd-box {
+    width: 35%;
+    text-align: center;
+    font-size: 10px;
+    padding-top: 10px;
+  }
+  .ttd-box .dots {
+    display: block;
+    margin: .5rem auto;
+    width: 150px;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+  }
+  .ttd-box .nipp-dots {
+    display: block;
+    margin-top: 5rem; 
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+
+  .ttd-box .nipp-line {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 0.5rem;
+    border-bottom: 1.5px solid #000;
+    width: 120px;
+  }
+
+  .nipp-dots_2 {
+    display: inline-block;
+    letter-spacing: .5px;
+    width: 80px;
+  }
+
+  /* ===== PAGE 2 ===== */
+  .page2-container {
+    page-break-before: always;
+  }
+  .page2 {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    min-height: 700px;
+    font-size: 11px;
+  }
+  .keterangan {
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  .keterangan .title { font-weight: bold; }
+  .signature-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20rem;
+    margin-top: 10px;
+    padding: 0 40px;
+  }
+  .sig-col {
+    text-align: center;
+    font-size: 10px;
+    width: 260px;
+  }
+  .sig-col .sign-dots {
+    display: block;
+    margin: .5rem auto;
+    width: 200px;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+  }
+
+  @media print {
+    .no-print { display: none; }
+  }
+  .no-print { text-align: center; margin: 10px 0; }
+  .no-print button { padding: 8px 24px; font-size: 16px; cursor: pointer; background: #005BAA; color: #fff; border: none; border-radius: 6px; }
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <button onclick="window.print()"><i class="fas fa-print"></i> Cetak / Simpan PDF</button>
+  <button onclick="window.close()" style="background:#666;margin-left:8px;">Tutup</button>
+</div>
+
+<!-- ================= PAGE 1 ================= -->
+<div class="page" id="page1">
+
+  <!-- HEADER -->
+  <table class="header-table">
+    <tr>
+      <td class="logo-cell" rowspan="5">
+        <div class="logo-kai">
+            <img src="assets/img/logo_kai_non-slogan.webp" alt="">
+        </div>
+        <div class="terbatas-box">TERBATAS</div>
+      </td>
+      <td class="title-cell" rowspan="5" style="width:60%;">
+        <div>PT. KERETA API INDONESIA(PERSERO)</div>
+        <div class="sub">SISTEM INFORMASI</div>
+        <div class="form-title">FORMULIR CHECKLIST PEMANTAUAN APAR</div>
+      </td>
+    </tr>
+    <tr>
+      <td class="meta-label">Nomor</td>
+      <td class="meta-value">: FR.SM/TI/015.007/10-2020</td>
+    </tr>
+    <tr>
+      <td class="meta-label">Tanggal Terbit</td>
+      <td class="meta-value">: 12 Oktober 2020</td>
+    </tr>
+    <tr>
+      <td class="meta-label">Status Revisi</td>
+      <td class="meta-value">: 002-2020</td>
+    </tr>
+    <tr>
+      <td class="meta-label">Halaman</td>
+      <td class="meta-value">: 1 dari 1</td>
+    </tr>
+  </table>
+
+  <!-- NO REF / TANGGAL / BUSINESS AREA -->
+  <table class="ref-table">
+    <tr>
+      <td class="label">No Ref</td>
+      <td class="colon">:</td>
+      <td class="val" id="noRef">__ / __ / ___</td>
+    </tr>
+    <tr>
+      <td class="label">Tanggal</td>
+      <td class="colon">:</td>
+      <td class="val" id="tanggal">__ / __ / ___</td>
+    </tr>
+    <tr>
+      <td class="label">Business Area</td>
+      <td class="colon">:</td>
+      <td class="val" id="businessArea">&nbsp;</td>
+    </tr>
+  </table>
+
+  <div class="bulan-line">
+    <strong>Bulan</strong>&nbsp;&nbsp;<b>:</b> <span class="dots" id="bulan">........................................................................</span>
+  </div>
+
+  <!-- MAIN TABLE -->
+  <table class="main" id="mainTable">
+    <thead>
+      <tr>
+        <th class="col-no" rowspan="2">No.</th>
+        <th class="col-kode" rowspan="2">Kode/ID Aset</th>
+        <th class="col-merk" rowspan="2">Merk</th>
+        <th class="col-tipe" rowspan="2">Tipe</th>
+        <th class="col-media" rowspan="2">Media Pemadam<br>(Air/Busa/Serbuk<br>/CO2/Hallon Free)</th>
+        <th class="col-kap" rowspan="2">Kapasitas<br>(Kg)</th>
+        <th class="col-lokasi" rowspan="2">Lokasi</th>
+        <th class="col-waktu-cek" colspan="2">Waktu Pengecekkan</th>
+        <th class="col-isiulang" rowspan="2">Tgl. Isi Ulang</th>
+        <th class="col-kadaluarsa" rowspan="2">Tgl.<br>Kadaluarsa</th>
+        <th class="col-indikator" rowspan="2">Indikator Tekanan Gas<br>(Hijau/Merah)</th>
+        <th class="col-perlakuan" rowspan="2">Perlakuan Fisik</th>
+        <th class="col-tindak" rowspan="2">Tindak Lanjut</th>
+        <th class="col-paraf" rowspan="2">Paraf Petugas</th>
+      </tr>
+      <tr>
+        <th class="col-wpe">Tgl.</th>
+        <th class="col-wpe">Jam</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <!-- CATATAN + TTD (selalu di page 1) -->
+  <div class="page1-footer">
+    <div class="catatan-box">
+      <span class="catatan-title">Catatan :</span> <span class="catatan-title_red">(catatatan mengenai pelaksanaan pengecekan APAR, jika ada)</span>
+      <div id="catatanText" style="margin-top:8px;font-size:10px;"></div>
+    </div>
+    <div class="ttd-box">
+      <b>Mengetahui,</b>
+      <span class="dots">............................................</span>
+      <span class="nipp-dots">.....................................</span>
+      <span class="nipp-line"></span>
+      <b>NIPP. <span class="nipp-dots_2">......................</span></b>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= PAGE 2 (hanya jika ada data lebih) ================= -->
+<div class="page2-container" id="page2Container">
+  <div class="page">
+    <div class="page2">
+      <div class="keterangan">
+        <span class="title">Keterangan :</span><br>
+        V : Kondisi Baik<br>
+        X : Kondisi Kurang Baik
+      </div>
+
+      <div class="signature-row">
+        <div class="ttd-box">
+          <b>Mengetahui,</b>
+          <span class="dots">............................................</span>
+          <span class="nipp-dots">.....................................</span>
+          <span class="nipp-line"></span>
+          <b>NIPP. <span class="nipp-dots_2">......................</span></b>
+        </div>
+        <div class="ttd-box sig-col">
+          <span class="sign-dots">........................., ...........................</span>
+          <b>Petugas</b>
+          <span class="nipp-dots">.....................................</span>
+          <span class="nipp-line"></span>
+          <b>NIPP. <span class="nipp-dots_2">......................</span></b>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Ambil data dari sessionStorage
+const exportData = JSON.parse(sessionStorage.getItem('exportData') || '[]');
+
+if(exportData.length > 0) {
+  const first = exportData[0];
+  document.getElementById('noRef').textContent = first.noRef || '-';
+  document.getElementById('tanggal').textContent = first.tglCek || '-';
+  document.getElementById('businessArea').textContent = first.businessArea || '-';
+  document.getElementById('bulan').textContent = first.bulan || '-';
+  
+  // Catatan
+  if(first.catatan) {
+    document.getElementById('catatanText').textContent = first.catatan;
+  }
+  
+  // Isi tabel - max 10 baris agar muat di page 1 (header + catatan + ttd)
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  const maxRowsOnPage1 = 10;
+  const totalData = exportData.length;
+  
+  for(let i = 0; i < Math.min(totalData, maxRowsOnPage1); i++) {
+    const d = exportData[i];
+    const paraf = d.signature && d.signature.length > 100 
+      ? `<img src="${d.signature}" style="width:50px;height:20px;object-fit:contain;">` 
+      : '';
+    tbody.innerHTML += `<tr>
+      <td><b>${i+1}</b></td>
+      <td>${d.kodeAsset||''}</td>
+      <td>${d.merk||''}</td>
+      <td>${d.tipe||''}</td>
+      <td>${d.media||''}</td>
+      <td>${d.kapasitas||''}</td>
+      <td>${d.lokasi||''}</td>
+      <td>${d.tglCek||''}</td>
+      <td>${d.jamCek||''}</td>
+      <td>${d.isiUlang||''}</td>
+      <td>${d.expired||''}</td>
+      <td>${d.indikator||''}</td>
+      <td>${d.fisik||''}</td>
+      <td>${d.tindak||''}</td>
+      <td>${paraf}</td>
+    </tr>`;
+  }
+  
+  // Jika data lebih dari 10, tambahkan page baru untuk sisa data (sebelum page 2)
+  if(totalData > maxRowsOnPage1) {
+    const remainingData = exportData.slice(maxRowsOnPage1);
+    const pagesNeeded = Math.ceil(remainingData.length / 15);
+    const page2El = document.getElementById('page2Container');
+    
+    for(let p = pagesNeeded - 1; p >= 0; p--) {
+      const startIdx = p * 15;
+      const endIdx = Math.min(startIdx + 15, remainingData.length);
+      
+      const pageDiv = document.createElement('div');
+      pageDiv.className = 'page';
+      pageDiv.style.pageBreakBefore = 'always';
+      
+      let tableHtml = `
+      <table class="main" style="margin-bottom:15px;">
+        <thead>
+          <tr>
+            <th class="col-no" rowspan="2">No.</th>
+            <th class="col-kode" rowspan="2">Kode/ID Aset</th>
+            <th class="col-merk" rowspan="2">Merk</th>
+            <th class="col-tipe" rowspan="2">Tipe</th>
+            <th class="col-media" rowspan="2">Media Pemadam</th>
+            <th class="col-kap" rowspan="2">Kap</th>
+            <th class="col-lokasi" rowspan="2">Lokasi</th>
+            <th class="col-waktu-cek" colspan="2">Waktu Cek</th>
+            <th class="col-isiulang" rowspan="2">Isi Ulang</th>
+            <th class="col-kadaluarsa" rowspan="2">Kadaluarsa</th>
+            <th class="col-indikator" rowspan="2">Indikator</th>
+            <th class="col-perlakuan" rowspan="2">Perlakuan</th>
+            <th class="col-tindak" rowspan="2">Tindak Lanjut</th>
+            <th class="col-paraf" rowspan="2">Paraf</th>
+          </tr>
+          <tr>
+            <th class="col-wpe">Tgl.</th>
+            <th class="col-wpe">Jam</th>
+          </tr>
+        </thead>
+        <tbody>`;
+      
+      for(let i = startIdx; i < endIdx; i++) {
+        const d = remainingData[i];
+        const globalIdx = i + maxRowsOnPage1 + 1;
+        const paraf = d.signature && d.signature.length > 100 
+          ? `<img src="${d.signature}" style="width:50px;height:20px;object-fit:contain;">` 
+          : '';
+        tableHtml += `<tr>
+          <td><b>${globalIdx}</b></td>
+          <td>${d.kodeAsset||''}</td>
+          <td>${d.merk||''}</td>
+          <td>${d.tipe||''}</td>
+          <td>${d.media||''}</td>
+          <td>${d.kapasitas||''}</td>
+          <td>${d.lokasi||''}</td>
+          <td>${d.tglCek||''}</td>
+          <td>${d.jamCek||''}</td>
+          <td>${d.isiUlang||''}</td>
+          <td>${d.expired||''}</td>
+          <td>${d.indikator||''}</td>
+          <td>${d.fisik||''}</td>
+          <td>${d.tindak||''}</td>
+          <td>${paraf}</td>
+        </tr>`;
+      }
+      
+      tableHtml += '</tbody></table>';
+      
+      tableHtml += `
+      <div class="page1-footer">
+        <div class="catatan-box">
+          <span class="catatan-title">Catatan :</span>
+          <div style="margin-top:8px;font-size:10px;">${first.catatan || ''}</div>
+        </div>
+        <div class="ttd-box">
+          <b>Mengetahui,</b>
+          <span class="dots">............................................</span>
+          <span class="nipp-dots">.....................................</span>
+          <span class="nipp-line"></span>
+          <b>NIPP. <span class="nipp-dots_2">......................</span></b>
+        </div>
+      </div>`;
+      
+      pageDiv.innerHTML = tableHtml;
+      document.body.insertBefore(pageDiv, page2El);
+    }
+  }
+  // Page 2 (keterangan + signature) selalu ditampilkan
+  document.getElementById('page2Container').style.display = 'block';
+  
+  
+  // Hapus sessionStorage setelah digunakan
+  sessionStorage.removeItem('exportData');
+}
+</script>
+</body>
+</html>

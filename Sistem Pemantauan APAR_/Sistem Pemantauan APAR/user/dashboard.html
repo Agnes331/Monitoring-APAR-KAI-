@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Dashboard | Sistem Monitoring APAR - PT KAI</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/user.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div class="wrapper">
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar">
+    <div>
+        <div class="logo-area">
+            <img src="../assets/img/logo kai.png" class="logo">
+            <h5>Sistem Monitoring APAR</h5>
+            <small>PT Kereta Api Indonesia (Persero)</small>
+        </div>
+        <nav class="menu">
+            <a href="dashboard.html" class="active"><i class="fas fa-house"></i><span>Beranda</span></a>
+            <a href="master-apar.html"><i class="fas fa-boxes-stacked"></i><span>Master APAR</span></a>
+            <a href="monitoring.html"><i class="fas fa-display"></i><span>Pusat Monitoring</span></a>
+            <a href="history.html"><i class="fas fa-clock-rotate-left"></i><span>Riwayat Inspeksi</span></a>
+            <a href="profile.html"><i class="fas fa-user"></i><span>Profil</span></a>
+        </nav>
+    </div>
+    <div class="sidebar-footer">
+        <a href="#" onclick="confirmLogout()"><i class="fas fa-right-from-bracket"></i><span>Logout</span></a>
+    </div>
+</aside>
+
+<!-- ================= CONTENT ================= -->
+<main class="content">
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="avatar" id="avatarDisplay">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-info">
+            <h4 id="namaUser">Petugas APAR</h4>
+            <div class="nipp" id="nippUser">NIPP: -</div>
+            <div class="unit"><i class="fas fa-location-dot"></i> <span id="unitUser">Stasiun Gambir - Daop 1 Jakarta</span></div>
+        </div>
+        <div class="header-actions">
+            <div class="signal-indicator">
+                <span class="signal-dot online" id="signalDot"></span>
+                <span id="signalText">Online</span>
+            </div>
+            <button class="notification-bell" onclick="toggleNotif()">
+                <i class="fas fa-bell"></i>
+                <span class="badge-notif" id="notifBadge">3</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Widget Grid -->
+    <div class="widget-grid">
+        <div class="widget-card">
+            <div class="widget-icon bg-blue"><i class="fas fa-fire-extinguisher"></i></div>
+            <div class="widget-label">Sisa Tugas Hari Ini</div>
+            <div class="widget-number blue" id="sisaTugas">0</div>
+            <div class="widget-sub">tabung belum diperiksa</div>
+        </div>
+
+        <div class="widget-card">
+            <div class="widget-icon bg-orange"><i class="fas fa-chart-simple"></i></div>
+            <div class="widget-label">Progress Bulan Ini</div>
+            <div class="progress-circle" id="progressCircle">
+                <svg width="70" height="70">
+                    <circle cx="35" cy="35" r="30" fill="none" stroke="#E5E7EB" stroke-width="5"/>
+                    <circle cx="35" cy="35" r="30" fill="none" stroke="#005BAA" stroke-width="5" stroke-dasharray="188.5" stroke-dashoffset="188.5" id="progressArc"/>
+                </svg>
+                <div class="progress-text"><span id="progressPct">0</span><small>%</small></div>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressBar" style="width:0%"></div>
+            </div>
+            <div class="widget-sub mt-1"><span id="progressCount">0 / 0</span> tabung</div>
+        </div>
+
+        <div class="widget-card">
+            <div class="widget-icon bg-red"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="widget-label">Status Kurang Baik</div>
+            <div class="widget-number red" id="statusMerah">0</div>
+            <div class="widget-sub">APAR rusak / kedaluwarsa</div>
+        </div>
+
+        <div class="widget-card">
+            <div class="widget-icon bg-green"><i class="fas fa-circle-check"></i></div>
+            <div class="widget-label">Inspeksi Selesai</div>
+            <div class="widget-number green" id="inspeksiSelesai">0</div>
+            <div class="widget-sub">bulan ini</div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <a class="quick-action-btn" onclick="openScanner()">
+            <div class="qa-icon" style="background:linear-gradient(135deg,#F58220,#FAA51A);">
+                <i class="fas fa-qrcode"></i>
+            </div>
+            <span class="qa-label">Scan QR APAR</span>
+        </a>
+        <a href="monitoring.html" class="quick-action-btn">
+            <div class="qa-icon" style="background:linear-gradient(135deg,#005BAA,#0A84D6);">
+                <i class="fas fa-pen-to-square"></i>
+            </div>
+            <span class="qa-label">Input Manual</span>
+        </a>
+        <a href="history.html" class="quick-action-btn">
+            <div class="qa-icon" style="background:linear-gradient(135deg,#16A34A,#4ADE80);">
+                <i class="fas fa-clock-rotate-left"></i>
+            </div>
+            <span class="qa-label">Riwayat Saya</span>
+        </a>
+        <a href="profile.html" class="quick-action-btn">
+            <div class="qa-icon" style="background:linear-gradient(135deg,#6366F1,#818CF8);">
+                <i class="fas fa-user-gear"></i>
+            </div>
+            <span class="qa-label">Profil Saya</span>
+        </a>
+    </div>
+
+    <!-- Master APAR Area Saya -->
+    <div class="custom-card">
+        <div class="card-title">
+            <i class="fas fa-boxes-stacked"></i> Master APAR Area Saya
+            <span class="badge-count" id="totalAparArea">0</span>
+        </div>
+        <div class="mb-3">
+            <input type="text" class="form-control" id="searchApar" placeholder="Cari kode aset, merk, atau lokasi..." oninput="filterApar()">
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Kode Aset</th>
+                        <th>Merk</th>
+                        <th>Tipe</th>
+                        <th>Lokasi</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="aparTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Aktivitas Terbaru -->
+    <div class="custom-card">
+        <div class="card-title">
+            <i class="fas fa-clock"></i> Riwayat Inspeksi Saya
+            <span class="badge-count" id="totalRiwayat">0</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>No Ref</th>
+                        <th>Tanggal</th>
+                        <th>Lokasi</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="riwayatTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center mt-3 text-muted" style="font-size:12px;">
+        <small>&copy; 2026 PT Kereta Api Indonesia (Persero)</small>
+    </div>
+
+</main>
+</div>
+
+<!-- ================= BOTTOM NAV (MOBILE) ================= -->
+<nav class="bottom-nav">
+    <div class="bnav-items">
+        <a href="dashboard.html" class="bnav-item active">
+            <i class="fas fa-house"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="monitoring.html" class="bnav-item">
+            <i class="fas fa-fire-extinguisher"></i>
+            <span>Monitoring</span>
+        </a>
+        <a href="#" class="bnav-item" onclick="openScanner()">
+            <div class="bnav-badge">
+                <i class="fas fa-qrcode" style="color:#F58220;font-size:24px;"></i>
+            </div>
+            <span style="color:#F58220;font-weight:700;">Scan</span>
+        </a>
+        <a href="history.html" class="bnav-item">
+            <i class="fas fa-clock-rotate-left"></i>
+            <span>Riwayat</span>
+        </a>
+        <a href="profile.html" class="bnav-item">
+            <i class="fas fa-user"></i>
+            <span>Profil</span>
+        </a>
+    </div>
+</nav>
+
+<!-- ================= QR SCANNER OVERLAY ================= -->
+<div class="qr-overlay" id="qrOverlay">
+    <div class="qr-header">
+        <h5><i class="fas fa-qrcode me-2"></i>Pindai QR APAR</h5>
+        <button class="btn-close-qr" onclick="closeScanner()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="qr-scanner-area" id="qrScannerArea">
+        <video id="qrVideo" style="width:100%;height:100%;object-fit:cover;border-radius:17px;" playsinline></video>
+    </div>
+    <p class="qr-hint">Arahkan kamera ke kode QR pada tabung APAR</p>
+    <p class="qr-hint" style="font-size:12px;margin-top:8px;">Atau <a href="#" style="color:#F58220;font-weight:600;" onclick="closeScanner();manualInput()">input manual</a></p>
+</div>
+
+<!-- ================= CHECKLIST FORM (BOTTOM SHEET) ================= -->
+<div class="checklist-overlay" id="checklistOverlay">
+    <div class="checklist-sheet">
+        <div class="checklist-handle"><span></span></div>
+        <div class="checklist-header">
+            <h4><i class="fas fa-clipboard-check me-2"></i>Form Inspeksi APAR</h4>
+            <button class="btn-close-cl" onclick="closeChecklist()"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="checklist-body">
+
+            <!-- Read-only Asset Info -->
+            <div style="background:#F0F4F8;border-radius:10px;padding:12px;margin-bottom:16px;">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <span class="form-label-sm">Kode Aset</span>
+                        <div style="font-weight:700;font-size:14px;color:#005BAA;" id="clKodeAset">-</div>
+                    </div>
+                    <div class="col-6">
+                        <span class="form-label-sm">Merk</span>
+                        <div style="font-weight:600;font-size:13px;" id="clMerk">-</div>
+                    </div>
+                    <div class="col-4">
+                        <span class="form-label-sm">Tipe</span>
+                        <div style="font-size:12px;" id="clTipe">-</div>
+                    </div>
+                    <div class="col-4">
+                        <span class="form-label-sm">Media</span>
+                        <div style="font-size:12px;" id="clMedia">-</div>
+                    </div>
+                    <div class="col-4">
+                        <span class="form-label-sm">Kapasitas</span>
+                        <div style="font-size:12px;" id="clKapasitas">-</div>
+                    </div>
+                    <div class="col-12">
+                        <span class="form-label-sm">Lokasi Standar</span>
+                        <div style="font-size:12px;" id="clLokasi">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tekanan Gas -->
+            <span class="form-label-sm">Indikator Tekanan Gas</span>
+            <div class="radio-group mb-3">
+                <div class="radio-option">
+                    <input type="radio" name="tekanan" id="tekananHijau" value="Hijau" checked>
+                    <label for="tekananHijau" class="green-opt"><i class="fas fa-circle-check"></i> Hijau</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" name="tekanan" id="tekananMerah" value="Merah">
+                    <label for="tekananMerah" class="red-opt"><i class="fas fa-circle-xmark"></i> Merah</label>
+                </div>
+            </div>
+
+            <!-- Perlakuan Fisik -->
+            <span class="form-label-sm">Perlakuan Fisik</span>
+            <select class="form-control-sm mb-3" id="clPerlakuan">
+                <option>Terawat - digantung di dinding</option>
+                <option>Diletakkan di bawah</option>
+                <option>Terhalang barang lain</option>
+                <option>Segel rusak</option>
+                <option>Lainnya</option>
+            </select>
+
+            <!-- Status Akhir -->
+            <span class="form-label-sm">Status Akhir Inspeksi</span>
+            <div class="radio-group mb-3">
+                <div class="radio-option">
+                    <input type="radio" name="statusAkhir" id="statusBaik" value="Baik" checked>
+                    <label for="statusBaik" class="green-opt"><i class="fas fa-check"></i> Kondisi Baik</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" name="statusAkhir" id="statusKurang" value="Kurang Baik">
+                    <label for="statusKurang" class="red-opt"><i class="fas fa-xmark"></i> Kurang Baik</label>
+                </div>
+            </div>
+
+            <!-- Tindak Lanjut -->
+            <span class="form-label-sm">Tindak Lanjut</span>
+            <input type="text" class="form-control-sm mb-3" id="clTindak" placeholder="Langkah penanganan jika kurang baik...">
+
+            <!-- Catatan -->
+            <span class="form-label-sm">Catatan Pelaksanaan</span>
+            <textarea class="form-control-sm mb-3" id="clCatatan" rows="2" placeholder="Kendala atau temuan spesifik di lokasi..."></textarea>
+
+            <!-- Upload Foto -->
+            <span class="form-label-sm">Bukti Fisik (Foto)</span>
+            <label class="photo-capture-btn" id="photoBtn">
+                <i class="fas fa-camera"></i> Jepret Foto Tabung / Manometer
+                <input type="file" accept="image/*" capture="environment" style="display:none;" id="photoInput" onchange="capturePhoto(event)">
+            </label>
+            <div class="photo-preview" id="photoPreview">
+                <img id="photoImg" src="" alt="Preview">
+                <button class="btn-remove-photo" onclick="removePhoto()"><i class="fas fa-xmark"></i></button>
+            </div>
+
+            <!-- Tanda Tangan Digital -->
+            <span class="form-label-sm">Paraf Digital (E-Signature)</span>
+            <div class="signature-area">
+                <canvas id="sigCanvas" width="400" height="100"></canvas>
+            </div>
+            <div class="signature-actions">
+                <button onclick="clearSignature()"><i class="fas fa-eraser me-1"></i>Hapus</button>
+                <button onclick="undoSignature()"><i class="fas fa-undo me-1"></i>Undo</button>
+            </div>
+
+            <!-- Submit -->
+            <button class="btn-submit-checklist" onclick="submitChecklist()">
+                <i class="fas fa-floppy-disk"></i> Simpan Hasil Inspeksi
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= NOTIFICATION PANEL ================= -->
+<div class="notif-panel" id="notifPanel">
+    <div class="notif-header">
+        <h5><i class="fas fa-bell me-2"></i>Notifikasi</h5>
+        <button class="btn-close-notif" onclick="toggleNotif()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="notif-body" id="notifBody">
+        <div class="notif-item">
+            <div class="notif-icon bg-warning"><i class="fas fa-clock"></i></div>
+            <div class="notif-content">
+                <strong>Batas Waktu Checklist</strong>
+                <p>H-3 sebelum batas akhir pengisian checklist bulan ini.</p>
+                <small>2 jam yang lalu</small>
+            </div>
+        </div>
+        <div class="notif-item">
+            <div class="notif-icon bg-info"><i class="fas fa-arrows-rotate"></i></div>
+            <div class="notif-content">
+                <strong>Revisi Jadwal Inspeksi</strong>
+                <p>Admin Pusat telah memperbarui jadwal inspeksi area Anda.</p>
+                <small>1 hari yang lalu</small>
+            </div>
+        </div>
+        <div class="notif-item">
+            <div class="notif-icon bg-danger"><i class="fas fa-truck"></i></div>
+            <div class="notif-content">
+                <strong>Pemindahan APAR</strong>
+                <p>3 tabung APAR di area Timur telah dipindahkan ke lokasi baru.</p>
+                <small>2 hari yang lalu</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= KAI MODAL ================= -->
+<div class="kai-modal-overlay" id="kaiModal">
+    <div class="kai-modal-box">
+        <div class="kai-modal-header">
+            <div class="modal-icon" id="modalIcon"><i class="fas fa-circle-check"></i></div>
+            <div class="modal-title" id="modalTitle">Berhasil</div>
+        </div>
+        <div class="kai-modal-body" id="modalBody">Data tersimpan.</div>
+        <div class="kai-modal-footer">
+            <button class="btn-modal btn-primary" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= LOGOUT CONFIRMATION MODAL ================= -->
+<div class="kai-modal-overlay" id="logoutModal">
+    <div class="kai-modal-box">
+        <div class="kai-modal-header">
+            <div class="modal-icon icon-warning"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="modal-title">Konfirmasi Logout</div>
+        </div>
+        <div class="kai-modal-body">Apakah Anda yakin ingin keluar dari sistem?</div>
+        <div class="kai-modal-footer" style="gap:10px;justify-content:center;">
+            <button class="btn-modal btn-secondary" onclick="closeLogoutModal()">Batal</button>
+            <button class="btn-modal btn-primary" onclick="doLogout()">Ya, Logout</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===========================
+// KAI MODAL
+// ===========================
+function showModal(icon, title, msg) {
+    const m = document.getElementById('kaiModal');
+    document.getElementById('modalIcon').className = 'modal-icon icon-' + icon;
+    document.getElementById('modalIcon').innerHTML = icon==='error'?'<i class="fas fa-circle-exclamation"></i>':icon==='success'?'<i class="fas fa-circle-check"></i>':icon==='warning'?'<i class="fas fa-triangle-exclamation"></i>':'<i class="fas fa-circle-info"></i>';
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalBody').textContent = msg;
+    m.classList.add('show');
+}
+function closeModal() { document.getElementById('kaiModal').classList.remove('show'); }
+document.getElementById('kaiModal').addEventListener('click', function(e) { if(e.target===this) closeModal(); });
+document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeModal(); });
+
+// ===========================
+// USER DATA
+// ===========================
+const user = JSON.parse(localStorage.getItem('user')) || {};
+const namaEl = document.getElementById('namaUser');
+const nippEl = document.getElementById('nippUser');
+const unitEl = document.getElementById('unitUser');
+if(user.nama) namaEl.textContent = user.nama;
+if(user.nip) nippEl.textContent = 'NIPP: ' + user.nip;
+if(user.area) unitEl.textContent = user.area + ' - ' + (user.daop || '');
+else if(user.daop) unitEl.textContent = user.daop;
+
+// ===========================
+// SIGNAL INDICATOR
+// ===========================
+function updateSignal() {
+    const dot = document.getElementById('signalDot');
+    const txt = document.getElementById('signalText');
+    if(navigator.onLine) {
+        dot.className = 'signal-dot online';
+        txt.textContent = 'Online';
+    } else {
+        dot.className = 'signal-dot offline';
+        txt.textContent = 'Offline';
+    }
+}
+updateSignal();
+window.addEventListener('online', updateSignal);
+window.addEventListener('offline', updateSignal);
+
+// ===========================
+// NOTIFICATION PANEL
+// ===========================
+function toggleNotif() {
+    document.getElementById('notifPanel').classList.toggle('show');
+}
+
+// ===========================
+// DASHBOARD DATA
+// ===========================
+const aparData = JSON.parse(localStorage.getItem('aparData')) || [];
+const aparHistory = JSON.parse(localStorage.getItem('aparHistory')) || [];
+
+// Group by session
+const sessions = {};
+aparData.forEach(item => {
+    if(!sessions[item.sessionId]) {
+        sessions[item.sessionId] = {
+            noRef: item.noRef, tanggal: item.tanggal || item.tglCek,
+            businessArea: item.businessArea || item.lokasi, bulan: item.bulan, total: 0
+        };
+    }
+    sessions[item.sessionId].total++;
+});
+const sessionList = Object.values(sessions);
+
+// Counters
+const now = new Date();
+const monthNow = now.toISOString().slice(0,7);
+const monthSessions = sessionList.filter(x => (x.bulan||'').includes(monthNow));
+const totalMonth = monthSessions.length;
+
+document.getElementById('sisaTugas').textContent = Math.max(0, 50 - totalMonth);
+document.getElementById('inspeksiSelesai').textContent = totalMonth;
+document.getElementById('statusMerah').textContent = aparData.filter(x => x.indikator === 'Merah').length;
+
+// Progress
+const target = 50;
+const pct = Math.min(100, Math.round((totalMonth / target) * 100));
+document.getElementById('progressPct').textContent = pct;
+document.getElementById('progressCount').textContent = totalMonth + ' / ' + target;
+document.getElementById('progressBar').style.width = pct + '%';
+
+const circumference = 188.5;
+const offset = circumference - (pct / 100) * circumference;
+document.getElementById('progressArc').setAttribute('stroke-dashoffset', offset);
+
+// ===========================
+// MASTER APAR TABLE
+// ===========================
+function renderAparTable(filter) {
+    const tbody = document.getElementById('aparTableBody');
+    let data = aparData;
+    if(filter) {
+        const f = filter.toLowerCase();
+        data = data.filter(x => (x.kodeAsset||'').toLowerCase().includes(f) || (x.merk||'').toLowerCase().includes(f) || (x.lokasi||'').toLowerCase().includes(f));
+    }
+    document.getElementById('totalAparArea').textContent = data.length;
+    if(data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">Belum ada data APAR</td></tr>';
+        return;
+    }
+    let html = '';
+    data.slice(-20).reverse().forEach(item => {
+        const status = item.indikator === 'Merah' ? 'bad' : 'good';
+        const label = item.indikator === 'Merah' ? 'Kurang Baik' : 'Baik';
+        html += '<tr><td><strong>' + (item.kodeAsset||'-') + '</strong></td><td>' + (item.merk||'-') + '</td><td>' + (item.tipe||'-') + '</td><td>' + (item.lokasi||'-') + '</td><td><span class="status-badge ' + status + '">' + label + '</span></td></tr>';
+    });
+    tbody.innerHTML = html;
+}
+renderAparTable();
+
+function filterApar() {
+    renderAparTable(document.getElementById('searchApar').value);
+}
+
+// ===========================
+// RIWAYAT TABLE
+// ===========================
+function renderRiwayat() {
+    const tbody = document.getElementById('riwayatTableBody');
+    const data = aparHistory || [];
+    document.getElementById('totalRiwayat').textContent = data.length;
+    if(data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3">Belum ada riwayat inspeksi</td></tr>';
+        return;
+    }
+    let html = '';
+    data.slice(-10).reverse().forEach(item => {
+        const h = item.header || item;
+        html += '<tr><td>' + (h.noRef||'-') + '</td><td>' + (h.tanggal||'-') + '</td><td>' + (h.businessArea||'-') + '</td><td><span class="status-badge good">Tersimpan</span></td></tr>';
+    });
+    tbody.innerHTML = html;
+}
+renderRiwayat();
+
+// ===========================
+// QR SCANNER
+// ===========================
+let scannerStream = null;
+
+function openScanner() {
+    document.getElementById('qrOverlay').classList.add('show');
+    startCamera();
+}
+
+function closeScanner() {
+    document.getElementById('qrOverlay').classList.remove('show');
+    stopCamera();
+}
+
+function startCamera() {
+    const video = document.getElementById('qrVideo');
+    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(function(stream) {
+            scannerStream = stream;
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch(function() {
+            showModal('error', 'Kamera Tidak Tersedia', 'Gagal mengakses kamera. Silakan input manual.');
+        });
+    }
+}
+
+function stopCamera() {
+    if(scannerStream) {
+        scannerStream.getTracks().forEach(track => track.stop());
+        scannerStream = null;
+    }
+}
+
+function manualInput() {
+    closeScanner();
+    window.location.href = 'monitoring.html';
+}
+
+// ===========================
+// CHECKLIST FORM
+// ===========================
+let scannedData = null;
+let sigPoints = [];
+let isDrawing = false;
+
+function openChecklist(data) {
+    scannedData = data;
+    document.getElementById('checklistOverlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+    // Fill asset info
+    document.getElementById('clKodeAset').textContent = data.kodeAsset || '-';
+    document.getElementById('clMerk').textContent = data.merk || '-';
+    document.getElementById('clTipe').textContent = data.tipe || '-';
+    document.getElementById('clMedia').textContent = data.media || '-';
+    document.getElementById('clKapasitas').textContent = data.kapasitas || '-';
+    document.getElementById('clLokasi').textContent = data.lokasi || '-';
+    initSignature();
+}
+
+function closeChecklist() {
+    document.getElementById('checklistOverlay').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+// Signature
+function initSignature() {
+    const canvas = document.getElementById('sigCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth || 400;
+    canvas.height = 100;
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = '#1a1a2e';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    sigPoints = [];
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('touchstart', function(e) { e.preventDefault(); startDraw(e.touches[0]); });
+    canvas.addEventListener('touchmove', function(e) { e.preventDefault(); draw(e.touches[0]); });
+    canvas.addEventListener('touchend', stopDraw);
+}
+
+function startDraw(e) {
+    isDrawing = true;
+    const rect = document.getElementById('sigCanvas').getBoundingClientRect();
+    sigPoints.push({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+}
+
+function draw(e) {
+    if(!isDrawing) return;
+    const canvas = document.getElementById('sigCanvas');
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    sigPoints.push({ x, y });
+    ctx.lineTo(x, y);
+    ctx.stroke();
+}
+
+function stopDraw() {
+    isDrawing = false;
+    const canvas = document.getElementById('sigCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.beginPath();
+}
+
+function clearSignature() {
+    const canvas = document.getElementById('sigCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    sigPoints = [];
+}
+
+function undoSignature() {
+    if(sigPoints.length === 0) return;
+    const canvas = document.getElementById('sigCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    sigPoints.pop();
+    ctx.beginPath();
+    sigPoints.forEach(p => { ctx.lineTo(p.x, p.y); ctx.stroke(); });
+}
+
+// Photo
+function capturePhoto(event) {
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('photoImg').src = e.target.result;
+        document.getElementById('photoPreview').classList.add('show');
+        document.getElementById('photoBtn').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+}
+
+function removePhoto() {
+    document.getElementById('photoPreview').classList.remove('show');
+    document.getElementById('photoBtn').style.display = 'flex';
+    document.getElementById('photoInput').value = '';
+}
+
+// Submit
+function submitChecklist() {
+    const tekanan = document.querySelector('input[name="tekanan"]:checked').value;
+    const statusAkhir = document.querySelector('input[name="statusAkhir"]:checked').value;
+    const perlakuan = document.getElementById('clPerlakuan').value;
+    const tindak = document.getElementById('clTindak').value;
+    const catatan = document.getElementById('clCatatan').value;
+
+    // Get signature as image
+    const sigCanvas = document.getElementById('sigCanvas');
+    const signatureData = sigCanvas.toDataURL();
+
+    // Get photo
+    const photoImg = document.getElementById('photoImg');
+    const photoData = photoImg.src || '';
+
+    const record = {
+        id: Date.now(),
+        sessionId: 'scan-' + Date.now(),
+        ...scannedData,
+        indikator: tekanan,
+        fisik: perlakuan,
+        statusAkhir: statusAkhir,
+        tindak: tindak,
+        catatan: catatan,
+        signature: signatureData,
+        photo: photoData,
+        tglCek: new Date().toISOString().slice(0,10),
+        jamCek: new Date().toTimeString().slice(0,5),
+        timestamp: new Date().toISOString()
+    };
+
+    let allData = JSON.parse(localStorage.getItem('aparData')) || [];
+    allData.push(record);
+    localStorage.setItem('aparData', JSON.stringify(allData));
+
+    closeChecklist();
+    showModal('success', 'Inspeksi Tersimpan', 'Data inspeksi APAR berhasil disimpan.');
+    renderAparTable();
+    renderRiwayat();
+}
+
+// ===========================
+// LOGOUT
+// ===========================
+function confirmLogout() {
+    document.getElementById('logoutModal').classList.add('show');
+}
+function closeLogoutModal() {
+    document.getElementById('logoutModal').classList.remove('show');
+}
+function doLogout() {
+    localStorage.removeItem('login');
+    localStorage.removeItem('user');
+    window.location.href = '../login.html';
+}
+document.getElementById('logoutModal').addEventListener('click', function(e) { if(e.target===this) closeLogoutModal(); });
+document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeLogoutModal(); });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+/* =========================
+   GLOBAL STYLES - PT KAI
+   ========================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
+
+:root{
+    --kai-dark-blue:#003868;
+    --kai-blue:#00529B;
+    --kai-light-blue:#0066B3;
+    --kai-orange:#F58220;
+    --kai-orange-hover:#E67310;
+    --kai-gold:#D4A843;
+    --kai-light:#F0F4F8;
+    --kai-white:#FFFFFF;
+    --kai-dark:#1A1A1A;
+    --kai-gray:#6B7280;
+    --kai-muted:#9CA3AF;
+    --kai-border:#E5E7EB;
+    --kai-gradient:linear-gradient(135deg, #003868 0%, #00529B 50%, #0066B3 100%);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+::selection{
+    background:var(--kai-orange);
+    color:white;
+}
+
+::-webkit-scrollbar{
+    width:8px;
+}
+
+::-webkit-scrollbar-track{
+    background:var(--kai-light);
+}
+
+::-webkit-scrollbar-thumb{
+    background:var(--kai-muted);
+    border-radius:4px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background:var(--kai-gray);
+}
+
+a{
+    color:var(--kai-dark-blue);
+    transition:.3s;
+}
+
+a:hover{
+    color:var(--kai-orange);
+}
+
+img{
+    max-width:100%;
+    height:auto;
+}
+
+/* ============================
+   KAI CUSTOM MODAL / TOAST
+   ============================ */
+
+.kai-modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+    z-index:99999;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    animation:fadeInOverlay .25s ease;
+}
+
+.kai-modal-overlay.show{
+    display:flex;
+}
+
+.kai-modal-overlay .kai-modal-box{
+    background:var(--kai-white);
+    border-radius:16px;
+    box-shadow:0 25px 60px rgba(0,0,0,.2);
+    width:100%;
+    max-width:400px;
+    padding:0;
+    animation:scaleIn .3s ease;
+    overflow:hidden;
+}
+
+.kai-modal-overlay .kai-modal-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:20px 24px 0;
+}
+
+.kai-modal-overlay .kai-modal-header .modal-icon{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    flex-shrink:0;
+    font-size:18px;
+}
+
+.kai-modal-overlay .kai-modal-header .modal-icon.icon-error{
+    background:#FEF2F2;
+    color:#DC2626;
+}
+
+.kai-modal-overlay .kai-modal-header .modal-icon.icon-success{
+    background:#F0FFF4;
+    color:#16A34A;
+}
+
+.kai-modal-overlay .kai-modal-header .modal-icon.icon-warning{
+    background:#FFFBEB;
+    color:#D97706;
+}
+
+.kai-modal-overlay .kai-modal-header .modal-icon.icon-info{
+    background:#EFF6FF;
+    color:#2563EB;
+}
+
+.kai-modal-overlay .kai-modal-header .modal-title{
+    font-weight:700;
+    font-size:16px;
+    color:var(--kai-dark);
+}
+
+.kai-modal-overlay .kai-modal-body{
+    padding:12px 24px 20px;
+    font-size:14px;
+    color:var(--kai-gray);
+    line-height:1.6;
+}
+
+.kai-modal-overlay .kai-modal-footer{
+    display:flex;
+    padding:0 24px 20px;
+}
+
+.kai-modal-overlay .kai-modal-footer .btn-modal{
+    flex:1;
+    height:42px;
+    border:none;
+    border-radius:10px;
+    font-weight:700;
+    font-size:13px;
+    font-family:'Nunito Sans',sans-serif;
+    cursor:pointer;
+    transition:.3s;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+}
+
+.kai-modal-overlay .kai-modal-footer .btn-modal.btn-primary{
+    background:var(--kai-dark-blue);
+    color:white;
+}
+
+.kai-modal-overlay .kai-modal-footer .btn-modal.btn-primary:hover{
+    background:var(--kai-light-blue);
+}
+
+@keyframes fadeInOverlay{
+    from{opacity:0;}
+    to{opacity:1;}
+}
+
+@keyframes scaleIn{
+    from{
+        opacity:0;
+        transform:scale(.92) translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:scale(1) translateY(0);
+    }
+}

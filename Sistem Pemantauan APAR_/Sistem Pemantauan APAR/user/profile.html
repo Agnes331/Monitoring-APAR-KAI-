@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Profil Petugas | Sistem Monitoring APAR - PT KAI</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/user.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<div class="wrapper">
+<aside class="sidebar">
+    <div>
+        <div class="logo-area">
+            <img src="../assets/img/logo kai.png" class="logo">
+            <h5>Sistem Monitoring APAR</h5>
+            <small>PT Kereta Api Indonesia (Persero)</small>
+        </div>
+        <nav class="menu">
+            <a href="dashboard.html"><i class="fas fa-house"></i><span>Beranda</span></a>
+            <a href="master-apar.html"><i class="fas fa-boxes-stacked"></i><span>Master APAR</span></a>
+            <a href="monitoring.html"><i class="fas fa-display"></i><span>Pusat Monitoring</span></a>
+            <a href="history.html"><i class="fas fa-clock-rotate-left"></i><span>Riwayat Inspeksi</span></a>
+            <a href="profile.html" class="active"><i class="fas fa-user"></i><span>Profil</span></a>
+        </nav>
+    </div>
+    <div class="sidebar-footer">
+        <a href="#" onclick="confirmLogout()"><i class="fas fa-right-from-bracket"></i><span>Logout</span></a>
+    </div>
+</aside>
+<main class="content">
+    <div class="page-header">
+        <div>
+            <h2>Profil Petugas</h2>
+            <p>Informasi akun monitoring APAR</p>
+        </div>
+    </div>
+
+    <div class="custom-card">
+        <div class="card-title"><i class="fas fa-id-card"></i> Informasi Akun</div>
+        <div class="row g-4">
+            <div class="col-md-3 text-center">
+                    <div style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:3px solid var(--kai-border);position:relative;display:inline-block;">
+                        <img id="fotoPreview" src="../assets/img/user.png" style="width:100%;height:100%;object-fit:contain;background:#f0f0f0;">
+                    <label for="fotoInput" style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:30px;height:30px;border-radius:50%;background:var(--kai-dark-blue);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #fff;font-size:12px;">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                    <input type="file" id="fotoInput" accept="image/*" onchange="uploadFoto(event)" style="display:none;">
+                </div>
+                <h5 class="mt-3 mb-0" id="namaView" style="font-weight:700;color:var(--kai-dark-blue);">-</h5>
+            </div>
+            <div class="col-md-9">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label style="font-weight:600;font-size:12px;">Nama Lengkap</label>
+                        <input id="nama" class="form-control" placeholder="Masukkan nama lengkap">
+                    </div>
+                    <div class="col-md-6">
+                        <label style="font-weight:600;font-size:12px;">NIPP</label>
+                        <input id="nipp" class="form-control" placeholder="Masukkan NIPP">
+                    </div>
+                    <div class="col-md-6">
+                        <label style="font-weight:600;font-size:12px;">Username</label>
+                        <input id="username" class="form-control" placeholder="Masukkan username">
+                    </div>
+                    <div class="col-md-6">
+                        <label style="font-weight:600;font-size:12px;">Email Korporat</label>
+                        <input id="email" class="form-control" placeholder="nama@kai.id">
+                    </div>
+                    <div class="col-md-6">
+                        <label style="font-weight:600;font-size:12px;">Unit Kerja / DAOP</label>
+                        <input id="daop" class="form-control" placeholder="Contoh: DAOP 1 - Jakarta">
+                    </div>
+                    <div class="col-md-6">
+                        <label style="font-weight:600;font-size:12px;">Role</label>
+                        <input class="form-control" value="Petugas Lapangan" readonly style="background:var(--kai-light);color:var(--kai-dark-blue);font-weight:600;">
+                    </div>
+                </div>
+                <div class="mt-3 text-end">
+                    <button class="btn btn-kai" onclick="saveProfile()"><i class="fas fa-floppy-disk"></i> Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-3 text-muted" style="font-size:12px;">
+        <small>&copy; 2026 PT Kereta Api Indonesia (Persero) — Sistem Monitoring APAR</small>
+    </div>
+
+</main>
+</div>
+<nav class="bottom-nav">
+    <div class="bnav-items">
+        <a href="dashboard.html" class="bnav-item"><i class="fas fa-house"></i><span>Beranda</span></a>
+        <a href="monitoring.html" class="bnav-item"><i class="fas fa-fire-extinguisher"></i><span>Monitoring</span></a>
+        <a href="history.html" class="bnav-item"><i class="fas fa-clock-rotate-left"></i><span>Riwayat</span></a>
+        <a href="profile.html" class="bnav-item active"><i class="fas fa-user"></i><span>Profil</span></a>
+    </div>
+</nav>
+
+<div class="kai-modal-overlay" id="kaiModal">
+    <div class="kai-modal-box">
+        <div class="kai-modal-header">
+            <div class="modal-icon" id="modalIcon"><i class="fas fa-circle-check"></i></div>
+            <div class="modal-title" id="modalTitle">Berhasil</div>
+        </div>
+        <div class="kai-modal-body" id="modalBody">Data tersimpan.</div>
+        <div class="kai-modal-footer">
+            <button class="btn-modal btn-primary" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function showModal(icon, title, msg) {
+    const m = document.getElementById('kaiModal');
+    document.getElementById('modalIcon').className = 'modal-icon icon-' + icon;
+    document.getElementById('modalIcon').innerHTML = icon==='error'?'<i class="fas fa-circle-exclamation"></i>':icon==='success'?'<i class="fas fa-circle-check"></i>':icon==='warning'?'<i class="fas fa-triangle-exclamation"></i>':'<i class="fas fa-circle-info"></i>';
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalBody').textContent = msg;
+    m.classList.add('show');
+}
+function closeModal() { document.getElementById('kaiModal').classList.remove('show'); }
+document.getElementById('kaiModal').addEventListener('click', function(e) { if(e.target===this) closeModal(); });
+document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeModal(); });
+
+let user = JSON.parse(localStorage.getItem("loginUser")) || { nama: "Petugas APAR", nipp: "", username: "", email: "", daop: "", foto: "" };
+
+function loadProfile() {
+    document.getElementById('nama').value = user.nama || '';
+    document.getElementById('nipp').value = user.nipp || '';
+    document.getElementById('username').value = user.username || '';
+    document.getElementById('email').value = user.email || '';
+    document.getElementById('daop').value = user.daop || '';
+    document.getElementById('namaView').innerText = user.nama || '-';
+    if (user.foto) document.getElementById('fotoPreview').src = user.foto;
+}
+
+function uploadFoto(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) { 
+        user.foto = e.target.result; 
+        document.getElementById('fotoPreview').src = user.foto; 
+        saveToStorage(); 
+    };
+    reader.readAsDataURL(file);
+}
+
+function saveProfile() {
+    user.nama = document.getElementById('nama').value.trim();
+    user.nipp = document.getElementById('nipp').value.trim();
+    user.username = document.getElementById('username').value.trim();
+    user.email = document.getElementById('email').value.trim();
+    user.daop = document.getElementById('daop').value.trim();
+    if(!user.nama) { showModal('warning', 'Lengkapi Data', 'Nama lengkap wajib diisi.'); return; }
+    saveToStorage(); 
+    loadProfile();
+    showModal('success', 'Berhasil', 'Profil berhasil diperbarui!');
+}
+
+function saveToStorage() { 
+    localStorage.setItem('loginUser', JSON.stringify(user)); 
+    localStorage.setItem('user', JSON.stringify(user));
+}
+
+function logout() { 
+    localStorage.removeItem('loginUser'); 
+    localStorage.removeItem('user');
+    window.location.href = '../login.html'; 
+}
+
+function confirmLogout() {
+    document.getElementById('logoutModal').classList.add('show');
+}
+function closeLogoutModal() {
+    document.getElementById('logoutModal').classList.remove('show');
+}
+function doLogout() {
+    localStorage.removeItem('loginUser');
+    localStorage.removeItem('user');
+    window.location.href = '../login.html';
+}
+document.getElementById('logoutModal').addEventListener('click', function(e) { if(e.target===this) closeLogoutModal(); });
+document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeLogoutModal(); });
+
+loadProfile();
+</script>
+
+<!-- ================= LOGOUT CONFIRMATION MODAL ================= -->
+<div class="kai-modal-overlay" id="logoutModal">
+    <div class="kai-modal-box">
+        <div class="kai-modal-header">
+            <div class="modal-icon icon-warning"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="modal-title">Konfirmasi Logout</div>
+        </div>
+        <div class="kai-modal-body">Apakah Anda yakin ingin keluar dari sistem?</div>
+        <div class="kai-modal-footer" style="gap:10px;justify-content:center;">
+            <button class="btn-modal btn-secondary" onclick="closeLogoutModal()">Batal</button>
+            <button class="btn-modal btn-primary" onclick="doLogout()">Ya, Logout</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,650 @@
+/* ===========================
+   KAI CORPORATE IDENTITY
+   =========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
+
+:root{
+    --kai-dark-blue:#003868;
+    --kai-blue:#00529B;
+    --kai-light-blue:#0066B3;
+    --kai-orange:#F58220;
+    --kai-orange-hover:#E67310;
+    --kai-light:#F0F4F8;
+    --kai-white:#FFFFFF;
+    --kai-dark:#1A1A1A;
+    --kai-gray:#6B7280;
+    --kai-muted:#9CA3AF;
+    --kai-border:#E5E7EB;
+    --kai-gradient:linear-gradient(135deg, #003868 0%, #00529B 50%, #0066B3 100%);
+}
+
+/* ===========================
+   BODY
+   =========================== */
+
+body{
+    margin:0;
+    padding:0;
+    font-family:'Nunito Sans','Proxima Nova','Segoe UI',sans-serif;
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:var(--kai-gradient);
+    position:relative;
+    overflow:auto;
+}
+
+/* Decorative Background Elements */
+body::before{
+    content:"";
+    position:fixed;
+    width:50vmax;
+    height:50vmax;
+    max-width:600px;
+    max-height:600px;
+    background:rgba(255,255,255,.04);
+    border-radius:50%;
+    top:-20vmin;
+    right:-15vmin;
+    pointer-events:none;
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    width:40vmax;
+    height:40vmax;
+    max-width:450px;
+    max-height:450px;
+    background:rgba(255,255,255,.03);
+    border-radius:50%;
+    bottom:-15vmin;
+    left:-12vmin;
+    pointer-events:none;
+}
+
+.kai-pattern{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events:none;
+    z-index:0;
+}
+
+/* ===========================
+   LOGIN CARD
+   =========================== */
+
+.login-container{
+    position:relative;
+    z-index:2;
+    width:100%;
+    max-width:460px;
+    padding:clamp(12px, 3vw, 24px);
+    animation:fadeIn .8s ease;
+}
+
+.login-card{
+    background:var(--kai-white);
+    padding:clamp(28px, 4vw, 40px) clamp(24px, 3.5vw, 36px) clamp(24px, 3.5vw, 32px);
+    border-radius:clamp(14px, 2vw, 18px);
+    box-shadow:0 25px 60px rgba(0,56,104,.2);
+    border:1px solid rgba(255,255,255,.1);
+}
+
+.login-card .logo-wrap{
+    text-align:center;
+    margin-bottom:clamp(20px, 3vw, 30px);
+    padding-bottom:clamp(16px, 2.5vw, 24px);
+    border-bottom:2px solid var(--kai-border);
+}
+
+.login-card .logo-wrap img{
+    height:clamp(36px, 6vw, 55px);
+    width:auto;
+    margin-bottom:5px;
+}
+
+.login-card .logo-wrap .brand-title{
+    font-size:clamp(14px, 1.8vw, 16px);
+    font-weight:700;
+    color:var(--kai-dark-blue);
+    margin:8px 0 2px;
+}
+
+.login-card .logo-wrap .brand-sub{
+    font-size:clamp(11px, 1.2vw, 12px);
+    color:var(--kai-gray);
+    font-weight:500;
+    margin:0;
+}
+
+.login-card h3{
+    text-align:center;
+    color:var(--kai-dark-blue);
+    font-weight:700;
+    font-size:clamp(17px, 2vw, 20px);
+    margin-bottom:8px;
+}
+
+.login-card .sub-text{
+    text-align:center;
+    color:var(--kai-gray);
+    font-size:clamp(13px, 1.4vw, 14px);
+    margin-bottom:clamp(20px, 3vw, 28px);
+}
+
+/* ===========================
+   INPUT
+   =========================== */
+
+.form-group{
+    margin-bottom:clamp(14px, 2vw, 20px);
+}
+
+.form-group label{
+    font-weight:600;
+    font-size:clamp(12px, 1.3vw, 13px);
+    color:var(--kai-dark-blue);
+    margin-bottom:6px;
+    display:block;
+}
+
+.form-group .input-wrap{
+    position:relative;
+}
+
+.form-group .input-wrap > i:first-child{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--kai-muted);
+    font-size:clamp(14px, 1.6vw, 16px);
+    transition:.3s;
+    z-index:1;
+    pointer-events:none;
+}
+
+.form-control{
+    height:clamp(42px, 5vw, 50px);
+    border-radius:8px;
+    border:1.5px solid var(--kai-border);
+    padding-left:38px;
+    padding-right:38px;
+    font-size:clamp(13px, 1.4vw, 14px);
+    font-family:'Nunito Sans','Proxima Nova',sans-serif;
+    transition:.3s;
+    background:var(--kai-light);
+    color:var(--kai-dark);
+    width:100%;
+    display:block;
+    box-sizing:border-box;
+}
+
+.form-control:focus{
+    border-color:var(--kai-light-blue);
+    box-shadow:0 0 0 4px rgba(0,102,179,.1);
+    background:var(--kai-white);
+}
+
+.form-control::placeholder{
+    color:var(--kai-muted);
+    font-size:clamp(12px, 1.3vw, 13px);
+}
+
+/* Password Toggle - inside input, non-overflowing */
+.password-toggle{
+    position:absolute;
+    right:4px;
+    top:50%;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    color:var(--kai-muted);
+    cursor:pointer;
+    font-size:clamp(14px, 1.5vw, 15px);
+    padding:clamp(6px, 0.8vw, 8px) clamp(8px, 1vw, 10px);
+    transition:.3s;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:2;
+    border-radius:6px;
+}
+
+.password-toggle:hover{
+    color:var(--kai-dark-blue);
+    background:rgba(0,56,104,.05);
+}
+
+/* ===========================
+   FORM OPTIONS (Remember Me & Forgot Password)
+   =========================== */
+
+.form-options{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:clamp(18px, 2.2vw, 22px);
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.remember-me{
+    display:inline-flex;
+    align-items:center;
+    font-size:clamp(12px, 1.3vw, 13px);
+    color:var(--kai-gray);
+    cursor:pointer;
+    font-weight:500;
+    user-select:none;
+    position:relative;
+    padding-left:26px;
+}
+
+.remember-me input{
+    position:absolute;
+    opacity:0;
+    cursor:pointer;
+    height:0;
+    width:0;
+}
+
+.remember-me .checkmark{
+    position:absolute;
+    left:0;
+    top:50%;
+    transform:translateY(-50%);
+    width:16px;
+    height:16px;
+    border:2px solid var(--kai-border);
+    border-radius:4px;
+    background:var(--kai-white);
+    transition:.3s;
+}
+
+.remember-me:hover input ~ .checkmark{
+    border-color:var(--kai-light-blue);
+}
+
+.remember-me input:checked ~ .checkmark{
+    background:var(--kai-dark-blue);
+    border-color:var(--kai-dark-blue);
+}
+
+.remember-me .checkmark::after{
+    content:'';
+    position:absolute;
+    display:none;
+    left:4px;
+    top:1px;
+    width:4px;
+    height:8px;
+    border:solid white;
+    border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+}
+
+.remember-me input:checked ~ .checkmark::after{
+    display:block;
+}
+
+.forgot-password{
+    font-size:clamp(12px, 1.3vw, 13px);
+    color:var(--kai-dark-blue);
+    font-weight:600;
+    text-decoration:none;
+    transition:.3s;
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+}
+
+.forgot-password:hover{
+    color:var(--kai-orange);
+    text-decoration:underline;
+}
+
+/* ===========================
+   BUTTON
+   =========================== */
+
+.btn-login{
+    width:100%;
+    height:clamp(38px, 4.5vw, 44px);
+    border:none;
+    border-radius:8px;
+    background:var(--kai-orange);
+    color:white;
+    font-weight:700;
+    font-size:clamp(13px, 1.4vw, 14px);
+    font-family:'Nunito Sans','Proxima Nova',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    transition:.3s;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    position:relative;
+}
+
+.btn-login:hover{
+    background:var(--kai-orange-hover);
+    transform:translateY(-2px);
+    box-shadow:0 8px 25px rgba(245,130,32,.35);
+}
+
+.btn-login:active{
+    transform:translateY(0);
+}
+
+.btn-login:disabled{
+    opacity:.7;
+    cursor:not-allowed;
+    transform:none !important;
+    box-shadow:none !important;
+}
+
+.btn-login .btn-loading{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:clamp(13px, 1.4vw, 14px);
+}
+
+.spinner{
+    width:18px;
+    height:18px;
+    border:2.5px solid rgba(255,255,255,.3);
+    border-top-color:white;
+    border-radius:50%;
+    animation:spin .6s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg);}
+}
+
+/* ===========================
+   DIVIDER
+   =========================== */
+
+.divider{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin:clamp(20px, 2.5vw, 25px) 0 clamp(16px, 2vw, 20px);
+    color:var(--kai-muted);
+    font-size:clamp(11px, 1.2vw, 12px);
+}
+
+.divider::before,
+.divider::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:var(--kai-border);
+}
+
+/* ===========================
+   LINK
+   =========================== */
+
+.login-card .register-link{
+    text-align:center;
+    margin:0;
+}
+
+.login-card .register-link span{
+    color:var(--kai-gray);
+    font-size:clamp(13px, 1.4vw, 14px);
+}
+
+.login-card .register-link a{
+    color:var(--kai-dark-blue);
+    font-weight:700;
+    text-decoration:none;
+    font-size:clamp(13px, 1.4vw, 14px);
+    transition:.3s;
+}
+
+.login-card .register-link a:hover{
+    color:var(--kai-orange);
+    text-decoration:underline;
+}
+
+/* ===========================
+   ALERT
+   =========================== */
+
+.alert{
+    border-radius:8px;
+    padding:clamp(10px, 1.5vw, 12px) clamp(14px, 1.8vw, 16px);
+    font-size:clamp(12px, 1.3vw, 13px);
+    font-weight:600;
+    margin-top:clamp(14px, 1.8vw, 18px);
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.alert-danger{
+    background:#FEF2F2;
+    border:1px solid #FECACA;
+    color:#DC2626;
+}
+
+.alert-success{
+    background:#F0FFF4;
+    border:1px solid #BBF7D0;
+    color:#16A34A;
+}
+
+/* ===========================
+   FORGOT PASSWORD PAGE
+   =========================== */
+
+.forgot-contact-list{
+    display:flex;
+    flex-direction:column;
+    gap:clamp(10px, 1.2vw, 12px);
+    margin-bottom:clamp(18px, 2.2vw, 22px);
+}
+
+.contact-card{
+    display:flex;
+    align-items:center;
+    gap:clamp(10px, 1.4vw, 14px);
+    padding:clamp(14px, 1.8vw, 16px) clamp(14px, 2vw, 18px);
+    background:var(--kai-light);
+    border-radius:clamp(10px, 1.2vw, 12px);
+    border:1px solid var(--kai-border);
+    transition:.3s;
+}
+
+.contact-card:hover{
+    border-color:var(--kai-light-blue);
+    box-shadow:0 4px 15px rgba(0,56,104,.06);
+}
+
+.contact-card .contact-icon{
+    width:clamp(36px, 5vw, 46px);
+    height:clamp(36px, 5vw, 46px);
+    border-radius:clamp(10px, 1.2vw, 12px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:clamp(16px, 2vw, 20px);
+    flex-shrink:0;
+}
+
+.contact-card .contact-icon.mail{
+    background:var(--kai-gradient);
+}
+
+.contact-card .contact-icon.wa{
+    background:#25D366;
+}
+
+.contact-card .contact-icon.phone{
+    background:var(--kai-orange);
+}
+
+.contact-card .contact-detail{
+    flex:1;
+    min-width:0;
+}
+
+.contact-card .contact-detail strong{
+    display:block;
+    font-size:clamp(13px, 1.4vw, 14px);
+    color:var(--kai-dark);
+    margin-bottom:2px;
+}
+
+.contact-card .contact-detail span{
+    display:block;
+    font-size:clamp(12px, 1.3vw, 13px);
+    color:var(--kai-gray);
+    font-weight:600;
+    word-break:break-word;
+}
+
+.contact-card .contact-detail small{
+    display:block;
+    font-size:clamp(10px, 1.1vw, 11px);
+    color:var(--kai-muted);
+    margin-top:2px;
+}
+
+.contact-card .contact-action{
+    width:clamp(30px, 4vw, 36px);
+    height:clamp(30px, 4vw, 36px);
+    background:var(--kai-white);
+    border:1px solid var(--kai-border);
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--kai-muted);
+    text-decoration:none;
+    transition:.3s;
+    flex-shrink:0;
+}
+
+.contact-card .contact-action:hover{
+    background:var(--kai-dark-blue);
+    border-color:var(--kai-dark-blue);
+    color:white;
+}
+
+.info-box{
+    display:flex;
+    gap:clamp(10px, 1.2vw, 12px);
+    padding:clamp(12px, 1.5vw, 14px) clamp(14px, 1.8vw, 16px);
+    background:#EFF6FF;
+    border:1px solid #BFDBFE;
+    border-radius:10px;
+    margin-bottom:clamp(16px, 2vw, 20px);
+}
+
+.info-box i{
+    font-size:clamp(18px, 2vw, 20px);
+    color:var(--kai-light-blue);
+    flex-shrink:0;
+    margin-top:2px;
+}
+
+.info-box strong{
+    display:block;
+    font-size:clamp(12px, 1.3vw, 13px);
+    color:var(--kai-dark-blue);
+    margin-bottom:4px;
+}
+
+.info-box p{
+    font-size:clamp(11px, 1.2vw, 12px);
+    color:var(--kai-gray);
+    line-height:1.6;
+    margin:0;
+}
+
+/* ===========================
+   ANIMATIONS
+   =========================== */
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(clamp(10px, 2vw, 20px));
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ===========================
+   RESPONSIVE - No static sizes, all fluid
+   =========================== */
+
+/* Extra small devices (phones, under 400px) */
+@media(max-width:400px){
+    .login-container{
+        padding:8px;
+    }
+    .login-card{
+        padding:20px 16px 18px;
+    }
+    .form-control{
+        height:38px;
+        padding-left:32px;
+        padding-right:32px;
+    }
+    .btn-login{
+        height:38px;
+    }
+    .contact-card{
+        flex-wrap:wrap;
+        gap:10px;
+    }
+    .contact-card .contact-action{
+        margin-left:auto;
+    }
+}
+
+/* Small devices (landscape phones, 401px - 576px) */
+@media(min-width:401px) and (max-width:576px){
+    .login-container{
+        padding:12px;
+    }
+    .login-card{
+        padding:24px 18px 20px;
+    }
+    .form-control{
+        height:42px;
+    }
+    .btn-login{
+        height:42px;
+    }
+}
+
+/* Medium devices (tablets, 577px - 768px) */
+@media(min-width:577px) and (max-width:768px){
+    .login-container{
+        padding:16px;
+    }
+}
+
+/* Large devices (desktops, 769px+) - base styles handle this */

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Monitoring APAR | Pusat Kendali - PT KAI</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/user.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+.badge-tekanan-hijau {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: #16A34A;
+    box-shadow: 0 1px 4px rgba(22,163,74,.3);
+}
+.badge-tekanan-merah {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: #DC2626;
+    box-shadow: 0 1px 4px rgba(220,38,38,.3);
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<aside class="sidebar">
+    <div>
+        <div class="logo-area">
+            <img src="../assets/img/logo kai.png" class="logo">
+            <h5>Sistem Monitoring APAR</h5>
+            <small>PT Kereta Api Indonesia (Persero)</small>
+        </div>
+        <nav class="menu">
+            <a href="dashboard.html"><i class="fas fa-house"></i><span>Beranda</span></a>
+            <a href="master-apar.html"><i class="fas fa-boxes-stacked"></i><span>Master APAR</span></a>
+            <a href="monitoring.html" class="active"><i class="fas fa-display"></i><span>Pusat Monitoring</span></a>
+            <a href="history.html"><i class="fas fa-clock-rotate-left"></i><span>Riwayat Inspeksi</span></a>
+            <a href="profile.html"><i class="fas fa-user"></i><span>Profil</span></a>
+        </nav>
+    </div>
+    <div class="sidebar-footer">
+        <a href="#" onclick="confirmLogout()"><i class="fas fa-right-from-bracket"></i><span>Logout</span></a>
+    </div>
+</aside>
+<main class="content" id="printArea">
+
+    <div class="page-header">
+        <div>
+            <h2>Pusat Monitoring APAR</h2>
+            <p>Dashboard kendali kelayakan aset pemadam — real-time</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <button class="btn btn-sm btn-kai" onclick="openInspeksiBaru()"><i class="fas fa-plus-circle"></i> Inspeksi Baru</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="exportPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+        </div>
+    </div>
+
+    <!-- FILTER -->
+    <div class="custom-card">
+        <div class="card-title"><i class="fas fa-sliders"></i> Filter Data</div>
+        <div class="row g-2 mb-2">
+            <div class="col-md-2">
+                <label>No. Referensi</label>
+                <input type="text" id="filterReferensi" class="form-control" placeholder="Cari no. ref..." oninput="applyFilter()">
+            </div>
+            <div class="col-md-2">
+                <label>Tanggal</label>
+                <input type="date" id="filterTanggal" class="form-control" onchange="applyFilter()">
+            </div>
+            <div class="col-md-2">
+                <label>Bulan</label>
+                <input type="month" id="filterBulan" class="form-control" onchange="applyFilter()">
+            </div>
+            <div class="col-md-3">
+                <label>Status</label>
+                <select id="filterStatus" class="form-select" onchange="applyFilter()">
+                    <option value="">Semua Status</option>
+                    <option value="Hijau">Kondisi Baik</option>
+                    <option value="Merah">Kurang Baik</option>
+                    <option value="Belum">Belum Diperiksa</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label>Business Area</label>
+                <select id="filterWilayah" class="form-select" onchange="applyFilter()">
+                    <option value="">Semua Area</option>
+                    <option>DAOP 1 - Jakarta</option>
+                    <option>DAOP 2 - Bandung</option>
+                    <option>DAOP 3 - Cirebon</option>
+                    <option>DAOP 4 - Semarang</option>
+                    <option>DAOP 5 - Purwokerto</option>
+                    <option>DAOP 6 - Yogyakarta</option>
+                    <option>DAOP 7 - Madiun</option>
+                    <option>DAOP 8 - Surabaya</option>
+                    <option>DAOP 9 - Jember</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <label>Cari</label>
+                <input type="text" id="filterCari" class="form-control" placeholder="Cari berdasarkan Kode Aset, Merk, atau Lokasi..." oninput="applyFilter()">
+            </div>
+        </div>
+    </div>
+
+    <!-- WIDGETS -->
+    <div class="widget-grid" id="summaryWidgets">
+        <div class="widget-card"><div class="widget-icon bg-blue"><i class="fas fa-fire-extinguisher"></i></div><div class="widget-label">Total APAR Terfilter</div><div class="widget-number blue" id="totalTerfilter">0</div><div class="widget-sub">tabung sesuai filter</div></div>
+        <div class="widget-card"><div class="widget-icon bg-green"><i class="fas fa-circle-check"></i></div><div class="widget-label">Sudah Diinspeksi</div><div class="widget-number green" id="totalSudah">0</div><div class="widget-sub">bulan berjalan</div></div>
+        <div class="widget-card"><div class="widget-icon bg-orange"><i class="fas fa-hourglass-half"></i></div><div class="widget-label">Belum Diinspeksi</div><div class="widget-number orange" id="totalBelum">0</div><div class="widget-sub">berisiko temuan audit</div></div>
+        <div class="widget-card"><div class="widget-icon bg-red"><i class="fas fa-triangle-exclamation"></i></div><div class="widget-label">Bermasalah (X)</div><div class="widget-number red" id="totalBermasalah">0</div><div class="widget-sub">rusak / tekanan drop</div></div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="custom-card p-0" style="overflow:hidden;">
+        <div class="card-title" style="margin:0;padding:14px 18px;border-bottom:1px solid var(--kai-border);border-radius:12px 12px 0 0;">
+            <i class="fas fa-table"></i> Data Inspeksi APAR
+            <span class="badge-count" id="totalDataCount">0 Data</span>
+        </div>
+        <div class="table-responsive" style="overflow-x:auto;white-space:nowrap;">
+            <table class="table table-hover align-middle" id="mainTable" style="font-size:12px;min-width:1400px;margin-bottom:0;">
+                <thead>
+                    <tr>
+                        <th>Kode Aset</th><th>Merk / Tipe</th><th>Media</th><th>Kap.</th><th>Lokasi</th>
+                        <th>Tgl Isi Ulang</th><th>Kadaluarsa</th><th>Waktu Cek</th><th>Tekanan</th>
+                        <th>Perlakuan</th><th>Status</th><th>Pemeriksa</th><th>Foto</th><th>Tanda Tangan</th><th style="width:80px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center mt-3 text-muted" style="font-size:12px;">
+        <small>&copy; 2026 PT Kereta Api Indonesia (Persero) — Dokumen Resmi Form APAR KAI</small>
+    </div>
+
+</main>
+</div>
+
+<nav class="bottom-nav">
+    <div class="bnav-items">
+        <a href="dashboard.html" class="bnav-item"><i class="fas fa-house"></i><span>Beranda</span></a>
+        <a href="monitoring.html" class="bnav-item active"><i class="fas fa-display"></i><span>Monitoring</span></a>
+        <a href="history.html" class="bnav-item"><i class="fas fa-clock-rotate-left"></i><span>Riwayat</span></a>
+        <a href="profile.html" class="bnav-item"><i class="fas fa-user"></i><span>Profil</span></a>
+    </div>
+</nav>
+
+<!-- INSPEKSI OVERLAY -->
+<div class="kai-modal-overlay" id="inspeksiOverlay" style="z-index:9999;">
+    <div class="checklist-sheet" style="max-width:600px;width:95%;margin:20px auto;background:#fff;border-radius:16px;overflow-y:auto;max-height:90vh;">
+        <div class="checklist-header" style="padding:16px 20px;border-bottom:1px solid var(--kai-border);display:flex;justify-content:space-between;align-items:center;">
+            <h4 style="margin:0;font-weight:700;color:var(--kai-dark-blue);"><i class="fas fa-clipboard-check me-2"></i><span id="inspeksiTitle">Inspeksi APAR</span></h4>
+            <button onclick="tutupInspeksi()" style="background:none;border:none;font-size:24px;color:#999;cursor:pointer;"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="checklist-body" style="padding:20px;">
+            <input type="hidden" id="editIdInspeksi" value="">
+            <div class="mb-3" style="position:relative;">
+                <label style="font-weight:600;font-size:13px;">Cari APAR</label>
+                <input type="text" id="cariAparInput" class="form-control" placeholder="Ketik kode aset, merk, atau lokasi..." oninput="cariAparLive()">
+                <div id="hasilCariApar" style="position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #ddd;border-radius:8px;max-height:200px;overflow-y:auto;z-index:99;display:none;box-shadow:0 4px 12px rgba(0,0,0,.1);"></div>
+            </div>
+            <!-- Detail APAR Terpilih - RAPI & SIMETRIS -->
+            <div id="inspeksiInfo" style="display:none;background:#F0F4F8;border:2px solid var(--kai-dark-blue);border-radius:12px;padding:16px;margin-bottom:16px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid var(--kai-dark-blue);">
+                    <div style="background:var(--kai-dark-blue);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;"><i class="fas fa-fire-extinguisher"></i></div>
+                    <span style="font-weight:700;font-size:14px;color:var(--kai-dark-blue);">Detail APAR Terpilih</span>
+                </div>
+                <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                    <tr>
+                        <td style="width:50%;padding:5px 8px 5px 0;vertical-align:top;">
+                            <span style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.3px;">Kode Aset</span>
+                            <div style="font-weight:700;font-size:15px;color:var(--kai-dark-blue);" id="iKodeAset">-</div>
+                        </td>
+                        <td style="width:50%;padding:5px 0 5px 8px;vertical-align:top;">
+                            <span style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.3px;">Merk / Tipe</span>
+                            <div style="font-weight:600;font-size:14px;" id="iMerkTipe">-</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:5px 8px 5px 0;vertical-align:top;">
+                            <span style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.3px;">Media</span>
+                            <div style="font-weight:600;font-size:13px;" id="iMedia">-</div>
+                        </td>
+                        <td style="padding:5px 0 5px 8px;vertical-align:top;">
+                            <span style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.3px;">Kapasitas</span>
+                            <div style="font-weight:600;font-size:13px;" id="iKapasitas">-</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding:5px 0;vertical-align:top;">
+                            <span style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.3px;">Lokasi</span>
+                            <div style="font-weight:600;font-size:13px;" id="iLokasi">-</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:5px 8px 5px 0;vertical-align:top;">
+                            <span style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.3px;">Tgl Isi Ulang</span>
+                            <div style="font-weight:600;font-size:13px;" id="iIsiUlang">-</div>
+                        </td>
+                        <td style="padding:5px 0 5px 8px;vertical-align:top;">
+                            <span style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.3px;">Kadaluarsa</span>
+                            <div style="font-weight:600;font-size:13px;" id="iExpired">-</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="inspeksiForm" style="display:none;">
+                <div class="mb-3">
+                    <label style="font-weight:600;font-size:13px;">Tekanan Gas</label>
+                    <div class="d-flex gap-3 mt-1">
+                        <label class="d-flex align-items-center gap-1" style="cursor:pointer;font-size:13px;"><input type="radio" name="iTekanan" value="Hijau" checked> Hijau (Normal)</label>
+                        <label class="d-flex align-items-center gap-1" style="cursor:pointer;font-size:13px;"><input type="radio" name="iTekanan" value="Merah"> Merah (Turun)</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label style="font-weight:600;font-size:13px;">Perlakuan Fisik</label>
+                    <select id="iFisik" class="form-select form-select-sm">
+                        <option>Terawat - digantung di dinding</option><option>Diletakkan di bawah</option><option>Terhalang barang lain</option><option>Segel rusak</option><option>Dalam Perbaikan/Refill Vendor</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label style="font-weight:600;font-size:13px;">Status Akhir</label>
+                    <div class="d-flex gap-3 mt-1">
+                        <label class="d-flex align-items-center gap-1" style="cursor:pointer;font-size:13px;"><input type="radio" name="iStatusAkhir" value="Baik" checked> Kondisi Baik</label>
+                        <label class="d-flex align-items-center gap-1" style="cursor:pointer;font-size:13px;"><input type="radio" name="iStatusAkhir" value="Kurang Baik"> Kurang Baik</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label style="font-weight:600;font-size:13px;">Tindak Lanjut</label>
+                    <input type="text" id="iTindak" class="form-control form-control-sm" placeholder="Langkah penanganan jika kurang baik...">
+                </div>
+                <div class="mb-3">
+                    <label style="font-weight:600;font-size:13px;">Catatan</label>
+                    <textarea id="iCatatan" class="form-control form-control-sm" rows="2" placeholder="Kendala atau temuan spesifik..."></textarea>
+                </div>
+                <div class="mb-3">
+                    <label style="font-weight:600;font-size:13px;">Bukti Fisik (Foto)</label>
+                    <label class="photo-capture-btn" id="iPhotoBtn" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:2px dashed #ccc;border-radius:8px;cursor:pointer;">
+                        <i class="fas fa-camera"></i> Jepret Foto
+                        <input type="file" accept="image/*" capture="environment" style="display:none;" id="iPhotoInput" onchange="captureInspeksiFoto(event)">
+                    </label>
+                    <div id="iPhotoPreview" style="display:none;margin-top:8px;position:relative;">
+                        <img id="iPhotoImg" src="" style="width:100%;max-height:150px;object-fit:cover;border-radius:8px;">
+                        <button onclick="hapusInspeksiFoto()" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;"><i class="fas fa-xmark"></i></button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label style="font-weight:600;font-size:13px;">Paraf Digital</label>
+                    <div style="border:1px solid #ddd;border-radius:8px;overflow:hidden;">
+                        <canvas id="iSigCanvas" width="540" height="120" style="width:100%;height:120px;cursor:crosshair;touch-action:none;"></canvas>
+                    </div>
+                    <div class="mt-1 d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="clearInspeksiSig()" style="font-size:11px;"><i class="fas fa-eraser"></i> Hapus</button>
+                    </div>
+                </div>
+                <div class="d-grid mt-4">
+                    <button class="btn btn-success" onclick="simpanInspeksi()" style="font-weight:700;"><i class="fas fa-floppy-disk"></i> Simpan Hasil Inspeksi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PHOTO MODAL -->
+<div class="kai-modal-overlay" id="photoModal" onclick="if(event.target===this)closeModal()" style="background:rgba(0,0,0,.8);z-index:9998;">
+    <div style="max-width:500px;width:100%;text-align:center;">
+        <img id="photoViewer" src="" style="width:100%;border-radius:12px;max-height:70vh;object-fit:contain;">
+        <button class="btn btn-sm mt-3" style="background:var(--kai-dark-blue);color:#fff;" onclick="closeModal()">Tutup</button>
+    </div>
+</div>
+
+<!-- KAI MODAL -->
+<div class="kai-modal-overlay" id="kaiModal">
+    <div class="kai-modal-box">
+        <div class="kai-modal-header">
+            <div class="modal-icon" id="modalIcon"><i class="fas fa-circle-check"></i></div>
+            <div class="modal-title" id="modalTitle">Berhasil</div>
+        </div>
+        <div class="kai-modal-body" id="modalBody">Data tersimpan.</div>
+        <div class="kai-modal-footer">
+            <button class="btn-modal btn-primary" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="kai-modal-overlay" id="confirmModal" style="z-index:10000;">
+    <div class="kai-modal-box" style="max-width:380px;">
+        <div class="kai-modal-header">
+            <div class="modal-icon icon-warning"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="modal-title">Konfirmasi Hapus</div>
+        </div>
+        <div class="kai-modal-body">Apakah Anda yakin ingin menghapus data ini?</div>
+        <div class="kai-modal-footer d-flex gap-2">
+            <button class="btn-modal" style="background:#f3f4f6;color:#333;flex:1;" onclick="document.getElementById('confirmModal').classList.remove('show')">Batal</button>
+            <button class="btn-modal btn-primary" style="flex:1;" onclick="confirmHapus()">Hapus</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function showModal(icon, title, msg) {
+    const m = document.getElementById('kaiModal');
+    document.getElementById('modalIcon').className = 'modal-icon icon-' + icon;
+    document.getElementById('modalIcon').innerHTML = icon==='error'?'<i class="fas fa-circle-exclamation"></i>':icon==='success'?'<i class="fas fa-circle-check"></i>':icon==='warning'?'<i class="fas fa-triangle-exclamation"></i>':'<i class="fas fa-circle-info"></i>';
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalBody').textContent = msg;
+    m.classList.add('show');
+}
+function closeModal() { document.getElementById('kaiModal').classList.remove('show'); document.getElementById('photoModal').classList.remove('show'); }
+document.getElementById('kaiModal').addEventListener('click', function(e) { if(e.target===this) closeModal(); });
+document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeModal(); });
+
+function openPhoto(src) {
+    if(!src) { showModal('info','Tidak Ada Foto','Belum ada bukti foto untuk APAR ini.'); return; }
+    document.getElementById('photoViewer').src = src;
+    document.getElementById('photoModal').classList.add('show');
+}
+function openSignature(src) {
+    if(!src || src === 'data:,' || src.length < 100) { showModal('info','Tidak Ada Tanda Tangan','Belum ada paraf digital untuk APAR ini.'); return; }
+    document.getElementById('photoViewer').src = src;
+    document.getElementById('photoModal').classList.add('show');
+}
+
+let masterData = JSON.parse(localStorage.getItem("aparData")) || [];
+let masterApar = JSON.parse(localStorage.getItem("masterApar")) || [];
+let filteredData = [];
+let selectedAparData = null;
+let hapusId = null;
+
+function getStatus(item) {
+    if(item.indikator === 'Merah' || item.statusAkhir === 'Kurang Baik') return 'Merah';
+    if(item.indikator === 'Hijau' || item.statusAkhir === 'Baik') return 'Hijau';
+    return 'Belum';
+}
+
+function applyFilter() {
+    const wil = document.getElementById('filterWilayah').value.toLowerCase();
+    const bln = document.getElementById('filterBulan').value;
+    const sts = document.getElementById('filterStatus').value;
+    const cari = document.getElementById('filterCari').value.toLowerCase();
+    const ref = document.getElementById('filterReferensi').value.toLowerCase();
+    const tgl = document.getElementById('filterTanggal').value;
+    filteredData = masterData.filter(item => {
+        const area = (item.businessArea || '').toLowerCase();
+        const bulan = (item.bulan || '');
+        const status = getStatus(item);
+        const search = (item.kodeAsset+' '+(item.merk||'')+' '+(item.lokasi||'')).toLowerCase();
+        const noRef = (item.noRef ? item.noRef.toString().toLowerCase() : '');
+        const tglCek = (item.tglCek || '');
+        if(wil && !area.includes(wil)) return false;
+        if(bln && bulan !== bln) return false;
+        if(sts && status !== sts) return false;
+        if(cari && !search.includes(cari)) return false;
+        if(ref && !noRef.includes(ref)) return false;
+        if(tgl && tglCek !== tgl) return false;
+        return true;
+    });
+    updateWidgets();
+    renderTable();
+}
+
+function updateWidgets() {
+    const total = filteredData.length;
+    const hijau = filteredData.filter(d => getStatus(d) === 'Hijau').length;
+    const merah = filteredData.filter(d => getStatus(d) === 'Merah').length;
+    const belum = filteredData.filter(d => getStatus(d) === 'Belum').length;
+    document.getElementById('totalTerfilter').textContent = total;
+    document.getElementById('totalSudah').textContent = hijau;
+    document.getElementById('totalBelum').textContent = belum;
+    document.getElementById('totalBermasalah').textContent = merah;
+}
+
+function renderTable() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    if(filteredData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="15" class="text-center text-muted py-4">Tidak ada data APAR.</td></tr>';
+        return;
+    }
+    filteredData.forEach((item, i) => {
+        const st = getStatus(item);
+        const statusBadge = st === 'Hijau' ? '<span class="status-badge good">Baik</span>' : st === 'Merah' ? '<span class="status-badge bad">Rusak</span>' : '<span class="status-badge pending">Belum</span>';
+        const tekananClass = item.indikator === 'Hijau' ? 'badge-tekanan-hijau' : 'badge-tekanan-merah';
+        const tekananLabel = item.indikator === 'Hijau' ? 'V' : 'X';
+        const tekananBadge = item.indikator ? '<span class="'+tekananClass+'">'+tekananLabel+'</span>' : '<span class="status-badge pending">-</span>';
+        const pemeriksa = item.pemeriksaNama || item.namaPetugas || '-';
+        const nipp = item.pemeriksaNIPP || item.nippPetugas || '-';
+        const waktuCek = (item.tglCek||'-')+' '+(item.jamCek||'');
+        const hasPhoto = item.photo && item.photo.length > 100;
+        const hasSig = item.signature && item.signature.length > 100;
+        tbody.innerHTML += '<tr><td><strong>'+(item.kodeAsset||'-')+'</strong></td><td>'+(item.merk||'-')+' / '+(item.tipe||'-')+'</td><td>'+(item.media||'-')+'</td><td>'+(item.kapasitas||'-')+'</td><td>'+(item.lokasi||'-')+'</td><td>'+(item.isiUlang||'-')+'</td><td>'+(item.expired||'-')+'</td><td>'+waktuCek+'</td><td style="text-align:center;">'+tekananBadge+'</td><td>'+(item.fisik||'-')+'</td><td style="text-align:center;">'+statusBadge+'</td><td>'+pemeriksa+'<br><small style="color:#999;">'+nipp+'</small></td><td style="text-align:center;vertical-align:middle;">'+(hasPhoto?'<img src="'+item.photo+'" style="width:40px;height:40px;border-radius:4px;object-fit:cover;cursor:pointer;" onclick="openPhoto(\''+item.photo+'\')">':'<span style="color:#ddd;">-</span>')+'</td><td style="text-align:center;vertical-align:middle;">'+(hasSig?'<img src="'+item.signature+'" style="width:50px;height:25px;object-fit:contain;cursor:pointer;" onclick="openSignature(\''+item.signature+'\')">':'<span style="color:#ddd;">-</span>')+'</td><td><div class="d-flex gap-1"><button class="btn btn-sm" style="background:var(--kai-light);border:none;font-size:13px;" onclick="editInspeksi('+item.id+')" title="Edit"><i class="fas fa-edit" style="color:var(--kai-dark-blue);"></i></button><button class="btn btn-sm" style="background:#FEE2E2;border:none;font-size:13px;" onclick="hapusInspeksi('+item.id+')" title="Hapus"><i class="fas fa-trash" style="color:#DC2626;"></i></button></div></td></tr>';
+    });
+}
+
+function hapusInspeksi(id) { hapusId = id; document.getElementById('confirmModal').classList.add('show'); }
+function confirmHapus() {
+    if(hapusId) { masterData = masterData.filter(d => d.id !== hapusId); localStorage.setItem('aparData', JSON.stringify(masterData)); hapusId = null; document.getElementById('confirmModal').classList.remove('show'); applyFilter(); showModal('success','Dihapus','Data inspeksi berhasil dihapus.'); }
+}
+
+function editInspeksi(id) {
+    const item = masterData.find(d => d.id === id); if(!item) return;
+    document.getElementById('editIdInspeksi').value = id; document.getElementById('inspeksiTitle').textContent = 'Edit Inspeksi APAR';
+    selectedAparData = { kodeAsset: item.kodeAsset, merk: item.merk, tipe: item.tipe, media: item.media, kapasitas: item.kapasitas, lokasi: item.lokasi, isiUlang: item.isiUlang, expired: item.expired };
+    document.getElementById('cariAparInput').value = item.kodeAsset+' - '+(item.merk||'')+' - '+(item.lokasi||'');
+    document.getElementById('hasilCariApar').style.display = 'none';
+    document.getElementById('iKodeAset').textContent = item.kodeAsset; document.getElementById('iMerkTipe').textContent = (item.merk||'-')+' / '+(item.tipe||'-');
+    document.getElementById('iMedia').textContent = item.media||'-'; document.getElementById('iKapasitas').textContent = item.kapasitas||'-';
+    document.getElementById('iLokasi').textContent = item.lokasi||'-'; document.getElementById('iIsiUlang').textContent = item.isiUlang||'-';
+    document.getElementById('iExpired').textContent = item.expired||'-';
+    document.getElementById('inspeksiInfo').style.display = 'block'; document.getElementById('inspeksiForm').style.display = 'block';
+    if(item.indikator==='Merah') document.querySelector('input[name="iTekanan"][value="Merah"]').checked = true; else document.querySelector('input[name="iTekanan"][value="Hijau"]').checked = true;
+    if(item.statusAkhir==='Kurang Baik') document.querySelector('input[name="iStatusAkhir"][value="Kurang Baik"]').checked = true; else document.querySelector('input[name="iStatusAkhir"][value="Baik"]').checked = true;
+    for(let i=0;i<document.getElementById('iFisik').options.length;i++){if(document.getElementById('iFisik').options[i].value===item.fisik){document.getElementById('iFisik').selectedIndex=i;break;}}
+    document.getElementById('iTindak').value = item.tindak||''; document.getElementById('iCatatan').value = item.catatan||'';
+    if(item.photo&&item.photo.length>100){inspeksiFotoData=item.photo;document.getElementById('iPhotoImg').src=item.photo;document.getElementById('iPhotoPreview').style.display='block';document.getElementById('iPhotoBtn').style.display='none';}
+    else{inspeksiFotoData='';document.getElementById('iPhotoPreview').style.display='none';document.getElementById('iPhotoBtn').style.display='flex';}
+    initInspeksiSig();
+    if(item.signature&&item.signature.length>100){const c=document.getElementById('iSigCanvas'),ctx=c.getContext('2d'),img=new Image();img.onload=function(){ctx.drawImage(img,0,0);};img.src=item.signature;}
+    document.getElementById('inspeksiOverlay').classList.add('show');
+}
+
+let inspeksiFotoData='',inspeksiIsDrawing=false,allAparList=[];
+function openInspeksiBaru() {
+    document.getElementById('editIdInspeksi').value='';document.getElementById('inspeksiTitle').textContent='Inspeksi APAR';selectedAparData=null;
+    document.getElementById('inspeksiInfo').style.display='none';document.getElementById('inspeksiForm').style.display='none';
+    document.getElementById('iPhotoPreview').style.display='none';document.getElementById('iPhotoBtn').style.display='flex';
+    document.getElementById('hasilCariApar').style.display='none';inspeksiFotoData='';
+    document.getElementById('cariAparInput').value='';document.getElementById('iTindak').value='';document.getElementById('iCatatan').value='';
+    document.querySelector('input[name="iTekanan"][value="Hijau"]').checked=true;document.querySelector('input[name="iStatusAkhir"][value="Baik"]').checked=true;
+    document.getElementById('iFisik').selectedIndex=0;
+    
+    // Reload data from localStorage to get latest
+    masterApar = JSON.parse(localStorage.getItem("masterApar")) || [];
+    masterData = JSON.parse(localStorage.getItem("aparData")) || [];
+    
+    allAparList=[];let seenKode=new Set();
+    masterApar.forEach(a=>{
+        const kode = a.kodeAsset || a.kode || '';
+        if(kode && !seenKode.has(kode)) {
+            seenKode.add(kode);
+            allAparList.push({
+                kodeAsset: kode,
+                merk: a.merk || '',
+                tipe: a.tipe || '',
+                media: a.media || '',
+                kapasitas: a.kapasitas || '',
+                lokasi: a.lokasi || '',
+                isiUlang: a.isiUlang || '',
+                expired: a.expired || ''
+            });
+        }
+    });
+    masterData.forEach(a=>{
+        const kode = a.kodeAsset || a.kode || '';
+        if(kode && !seenKode.has(kode)) {
+            seenKode.add(kode);
+            allAparList.push({
+                kodeAsset: kode,
+                merk: a.merk || '',
+                tipe: a.tipe || '',
+                media: a.media || '',
+                kapasitas: a.kapasitas || '',
+                lokasi: a.lokasi || '',
+                isiUlang: a.isiUlang || '',
+                expired: a.expired || ''
+            });
+        }
+    });
+    
+    console.log('Total APAR loaded:', allAparList.length);
+    document.getElementById('inspeksiOverlay').classList.add('show');initInspeksiSig();
+}
+function tutupInspeksi(){document.getElementById('inspeksiOverlay').classList.remove('show');document.getElementById('hasilCariApar').style.display='none';}
+function cariAparLive(){
+    const q=document.getElementById('cariAparInput').value.toLowerCase().trim(),hasilDiv=document.getElementById('hasilCariApar');
+    if(!q){hasilDiv.style.display='none';document.getElementById('inspeksiInfo').style.display='none';document.getElementById('inspeksiForm').style.display='none';selectedAparData=null;return;}
+    
+    console.log('Searching for:', q, 'in', allAparList.length, 'items');
+    
+    const filtered=allAparList.filter(a=>{
+        const searchStr = ((a.kodeAsset||'')+' '+(a.merk||'')+' '+(a.tipe||'')+' '+(a.lokasi||'')).toLowerCase();
+        return searchStr.includes(q);
+    }).slice(0,20);
+    
+    console.log('Found:', filtered.length, 'results');
+    
+    if(filtered.length===0){hasilDiv.innerHTML='<div style="padding:8px 12px;color:#999;font-size:13px;">Tidak ditemukan</div>';hasilDiv.style.display='block';return;}
+    let html='';filtered.forEach(a=>{html+='<div onclick="pilihApar(\''+a.kodeAsset+'\')" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:13px;display:flex;justify-content:space-between;"><span><strong>'+a.kodeAsset+'</strong> - '+(a.merk||'')+'</span><span style="color:#999;font-size:11px;">'+(a.lokasi||'')+'</span></div>';});
+    hasilDiv.innerHTML=html;hasilDiv.style.display='block';
+}
+function pilihApar(kodeAsset){
+    const a=allAparList.find(x=>x.kodeAsset===kodeAsset);if(!a)return;
+    selectedAparData=a;document.getElementById('cariAparInput').value=kodeAsset+' - '+(a.merk||'')+' - '+(a.lokasi||'');document.getElementById('hasilCariApar').style.display='none';
+    document.getElementById('iKodeAset').textContent=kodeAsset;document.getElementById('iMerkTipe').textContent=(a.merk||'-')+' / '+(a.tipe||'-');
+    document.getElementById('iMedia').textContent=a.media||'-';document.getElementById('iKapasitas').textContent=a.kapasitas||'-';
+    document.getElementById('iLokasi').textContent=a.lokasi||'-';document.getElementById('iIsiUlang').textContent=a.isiUlang||'-';document.getElementById('iExpired').textContent=a.expired||'-';
+    document.getElementById('inspeksiInfo').style.display='block';document.getElementById('inspeksiForm').style.display='block';
+}
+document.addEventListener('click',function(e){const c=document.getElementById('cariAparInput')?.parentElement;if(c&&!c.contains(e.target)){document.getElementById('hasilCariApar').style.display='none';}});
+function captureInspeksiFoto(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(e){inspeksiFotoData=e.target.result;document.getElementById('iPhotoImg').src=e.target.result;document.getElementById('iPhotoPreview').style.display='block';document.getElementById('iPhotoBtn').style.display='none';};r.readAsDataURL(f);}
+function hapusInspeksiFoto(){inspeksiFotoData='';document.getElementById('iPhotoPreview').style.display='none';document.getElementById('iPhotoBtn').style.display='flex';document.getElementById('iPhotoInput').value='';}
+function initInspeksiSig(){
+    const c=document.getElementById('iSigCanvas'),ctx=c.getContext('2d');
+    c.width=c.offsetWidth||540;c.height=120;ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.strokeStyle='#1a1a2e';ctx.lineWidth=2;ctx.lineCap='round';inspeksiIsDrawing=false;
+    c.onmousedown=function(e){inspeksiIsDrawing=true;const r=c.getBoundingClientRect();ctx.beginPath();ctx.moveTo(e.clientX-r.left,e.clientY-r.top);};
+    c.onmousemove=function(e){if(!inspeksiIsDrawing)return;const r=c.getBoundingClientRect();ctx.lineTo(e.clientX-r.left,e.clientY-r.top);ctx.stroke();ctx.beginPath();ctx.moveTo(e.clientX-r.left,e.clientY-r.top);};
+    c.onmouseup=function(){inspeksiIsDrawing=false;};c.onmouseleave=function(){inspeksiIsDrawing=false;};
+    c.addEventListener('touchstart',function(e){e.preventDefault();inspeksiIsDrawing=true;const r=c.getBoundingClientRect(),t=e.touches[0];ctx.beginPath();ctx.moveTo(t.clientX-r.left,t.clientY-r.top);},{passive:false});
+    c.addEventListener('touchmove',function(e){e.preventDefault();if(!inspeksiIsDrawing)return;const r=c.getBoundingClientRect(),t=e.touches[0];ctx.lineTo(t.clientX-r.left,t.clientY-r.top);ctx.stroke();ctx.beginPath();ctx.moveTo(t.clientX-r.left,t.clientY-r.top);},{passive:false});
+    c.addEventListener('touchend',function(e){e.preventDefault();inspeksiIsDrawing=false;},{passive:false});
+}
+function clearInspeksiSig(){const c=document.getElementById('iSigCanvas'),ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);}
+function simpanInspeksi(){
+    const editId=document.getElementById('editIdInspeksi').value;
+    if(!selectedAparData&&!editId){showModal('warning','Pilih APAR','Silakan cari dan pilih APAR yang akan diinspeksi.');return;}
+    const tekanan=document.querySelector('input[name="iTekanan"]:checked').value,statusAkhir=document.querySelector('input[name="iStatusAkhir"]:checked').value,fisik=document.getElementById('iFisik').value,tindak=document.getElementById('iTindak').value.trim(),catatan=document.getElementById('iCatatan').value.trim(),sig=document.getElementById('iSigCanvas').toDataURL();
+    const user=JSON.parse(localStorage.getItem('user'))||JSON.parse(localStorage.getItem('loginUser'))||{},now=new Date(),bulan=now.toISOString().slice(0,7),tgl=now.toISOString().slice(0,10),jam=now.toTimeString().slice(0,5);
+    if(editId){
+        const idx=masterData.findIndex(d=>d.id==editId);if(idx===-1){showModal('error','Error','Data tidak ditemukan.');return;}
+        masterData[idx].indikator=tekanan;masterData[idx].fisik=fisik;masterData[idx].statusAkhir=statusAkhir;masterData[idx].tindak=tindak;masterData[idx].catatan=catatan;masterData[idx].photo=inspeksiFotoData;masterData[idx].signature=sig;masterData[idx].tglCek=tgl;masterData[idx].jamCek=jam;masterData[idx].bulan=bulan;masterData[idx].tanggal=tgl;masterData[idx].timestamp=now.toISOString();
+        localStorage.setItem('aparData',JSON.stringify(masterData));tutupInspeksi();showModal('success','Diperbarui','Data inspeksi berhasil diperbarui.');applyFilter();
+    }else{
+        if(!selectedAparData){showModal('warning','Pilih APAR','Silakan cari dan pilih APAR.');return;}
+        const noRef='REF-'+now.getTime().toString().slice(-6),record={id:Date.now(),noRef:noRef,sessionId:'session-'+Date.now(),kodeAsset:selectedAparData.kodeAsset,merk:selectedAparData.merk||'',tipe:selectedAparData.tipe||'',media:selectedAparData.media||'',kapasitas:selectedAparData.kapasitas||'',lokasi:selectedAparData.lokasi||'',isiUlang:selectedAparData.isiUlang||'',expired:selectedAparData.expired||'',indikator:tekanan,fisik:fisik,statusAkhir:statusAkhir,tindak:tindak,catatan:catatan,photo:inspeksiFotoData,signature:sig,tglCek:tgl,jamCek:jam,bulan:bulan,tanggal:tgl,businessArea:user.area||user.daop||'DAOP 1 - Jakarta',pemeriksaNama:user.nama||'Petugas',pemeriksaNIPP:user.nip||user.nipp||'-',timestamp:now.toISOString()};
+        masterData.push(record);localStorage.setItem('aparData',JSON.stringify(masterData));tutupInspeksi();showModal('success','Inspeksi Tersimpan','Data inspeksi APAR '+selectedAparData.kodeAsset+' berhasil disimpan.');applyFilter();
+    }
+}
+function exportPDF(){if(filteredData.length===0){showModal('warning','Data Kosong','Tidak ada data untuk diekspor.');return;};sessionStorage.setItem('exportData',JSON.stringify(filteredData));const win=window.open('../template-form-check.html','_blank');if(!win){showModal('error','Popup Terblokir','Izinkan popup untuk membuka template formulir.');}}
+
+// ====== LOGOUT ======
+function confirmLogout() {
+    document.getElementById('logoutModal').classList.add('show');
+}
+function closeLogoutModal() {
+    document.getElementById('logoutModal').classList.remove('show');
+}
+function doLogout() {
+    localStorage.removeItem('login');
+    localStorage.removeItem('user');
+    window.location.href = '../login.html';
+}
+document.getElementById('logoutModal').addEventListener('click', function(e) { if(e.target===this) closeLogoutModal(); });
+document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeLogoutModal(); });
+(function(){const p=new URLSearchParams(window.location.search);if(p.has('ref'))document.getElementById('filterReferensi').value=p.get('ref');if(p.has('tgl'))document.getElementById('filterTanggal').value=p.get('tgl');if(p.has('area')){const a=p.get('area'),s=document.getElementById('filterWilayah');for(let i=0;i<s.options.length;i++){if(s.options[i].value.toLowerCase()===a.toLowerCase()){s.selectedIndex=i;break;}}}if(p.has('bulan'))document.getElementById('filterBulan').value=p.get('bulan');applyFilter();})();
+</script>
+
+<!-- ================= LOGOUT CONFIRMATION MODAL ================= -->
+<div class="kai-modal-overlay" id="logoutModal">
+    <div class="kai-modal-box">
+        <div class="kai-modal-header">
+            <div class="modal-icon icon-warning"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="modal-title">Konfirmasi Logout</div>
+        </div>
+        <div class="kai-modal-body">Apakah Anda yakin ingin keluar dari sistem?</div>
+        <div class="kai-modal-footer" style="gap:10px;justify-content:center;">
+            <button class="btn-modal btn-secondary" onclick="closeLogoutModal()">Batal</button>
+            <button class="btn-modal btn-primary" onclick="doLogout()">Ya, Logout</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

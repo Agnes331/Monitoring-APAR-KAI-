@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Form Checklist APAR | PT KAI</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/user.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<div class="wrapper">
+<aside class="sidebar">
+    <div>
+        <div class="logo-area">
+            <img src="../assets/img/logo kai.png" class="logo">
+            <h5>Sistem Monitoring APAR</h5>
+            <small>PT Kereta Api Indonesia (Persero)</small>
+        </div>
+        <nav class="menu">
+            <a href="dashboard.html"><i class="fas fa-house"></i><span>Beranda</span></a>
+            <a href="master-apar.html"><i class="fas fa-boxes-stacked"></i><span>Master APAR</span></a>
+            <a href="monitoring.html"><i class="fas fa-display"></i><span>Pusat Monitoring</span></a>
+            <a href="form-checklist.html" class="active"><i class="fas fa-file-pen"></i><span>Form Checklist</span></a>
+            <a href="history.html"><i class="fas fa-clock-rotate-left"></i><span>Riwayat Inspeksi</span></a>
+            <a href="profile.html"><i class="fas fa-user"></i><span>Profil</span></a>
+        </nav>
+    </div>
+    <div class="sidebar-footer">
+        <a href="#" onclick="confirmLogout()"><i class="fas fa-right-from-bracket"></i><span>Logout</span></a>
+    </div>
+</aside>
+<main class="content" id="formContainer">
+
+    <div class="page-header">
+        <div>
+            <h2>Form Checklist Pemantauan APAR</h2>
+            <p>Dokumen Resmi PT Kereta Api Indonesia (Persero)</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <button class="btn btn-sm btn-outline-secondary" onclick="exportExcel()"><i class="fas fa-file-excel"></i> Excel</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="exportPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+            <button class="btn btn-sm btn-kai-orange" onclick="window.print()"><i class="fas fa-print"></i> Cetak</button>
+        </div>
+    </div>
+
+    <!-- ====== KOP SURAT ====== -->
+    <div class="custom-card" id="kopSurat" style="text-align:center;padding:30px 22px 20px;">
+        <img src="../assets/img/logo kai.png" style="height:55px;margin-bottom:8px;">
+        <h4 style="font-weight:800;color:var(--kai-dark-blue);margin:5px 0 2px;font-size:18px;">PT KERETA API INDONESIA (Persero)</h4>
+        <p style="font-size:12px;color:var(--kai-gray);margin:0;">SISTEM MONITORING APAR — FORMULIR CHECKLIST PEMANTAUAN</p>
+        <p style="font-size:11px;color:var(--kai-muted);margin:2px 0 0;">Dokumen Resmi Inspeksi Alat Pemadam Api Ringan</p>
+        <hr style="margin:12px auto;width:80%;border-color:var(--kai-dark-blue);opacity:.3;">
+    </div>
+
+    <!-- ====== HEADER FORM (OTOMATIS DARI USER LOGIN) ====== -->
+    <div class="custom-card">
+        <div class="card-title"><i class="fas fa-file-lines"></i> Informasi Dokumen</div>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label>No. Formulir</label>
+                <input id="noForm" class="form-control" readonly>
+            </div>
+            <div class="col-md-3">
+                <label>Tanggal Pemeriksaan</label>
+                <input type="date" id="tglPeriksa" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label>Business Area / DAOP</label>
+                <input id="daopDisplay" class="form-control" readonly>
+            </div>
+            <div class="col-md-3">
+                <label>Unit Kerja / Stasiun</label>
+                <input id="unitDisplay" class="form-control" readonly>
+            </div>
+        </div>
+        <div class="row g-3 mt-2">
+            <div class="col-md-4">
+                <label>Pemeriksa</label>
+                <input id="namaPetugasDisplay" class="form-control" readonly>
+            </div>
+            <div class="col-md-4">
+                <label>NIPP</label>
+                <input id="nippDisplay" class="form-control" readonly>
+            </div>
+            <div class="col-md-4">
+                <label>Jabatan</label>
+                <input id="jabatanDisplay" class="form-control" readonly>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== PILIH APAR ====== -->
+    <div class="custom-card">
+        <div class="card-title">
+            <i class="fas fa-list-check"></i> Pilih APAR untuk Diinspeksi
+            <span class="badge-count" id="selectedCount">0</span>
+        </div>
+        <div class="row g-2 mb-3">
+            <div class="col-md-6">
+                <input type="text" id="searchApar" class="form-control" placeholder="Cari kode aset, merk, atau lokasi..." oninput="loadAparList()">
+            </div>
+            <div class="col-md-3">
+                <select id="filterMediaPilih" class="form-select" onchange="loadAparList()">
+                    <option value="">Semua Media</option>
+                    <option>Air</option><option>Busa (Foam)</option><option>Serbuk Kering</option><option>CO2</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-sm btn-kai w-100" onclick="selectAllVisible()"><i class="fas fa-check-double"></i> Pilih Semua</button>
+            </div>
+        </div>
+        <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+            <table class="table table-hover align-middle" style="font-size:13px;">
+                <thead style="position:sticky;top:0;z-index:2;">
+                    <tr>
+                        <th style="width:30px;">Pilih</th>
+                        <th>Kode Aset</th>
+                        <th>Merk</th>
+                        <th>Tipe</th>
+                        <th>Media</th>
+                        <th>Kap.</th>
+                        <th>Lokasi</th>
+                    </tr>
+                </thead>
+                <tbody id="aparListBody"></tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <span style="font-size:13px;color:var(--kai-gray);">Menampilkan <span id="listCount">0</span> APAR</span>
+            <button class="btn btn-sm btn-success" onclick="addSelectedToForm()"><i class="fas fa-plus"></i> Tambahkan ke Formulir</button>
+        </div>
+    </div>
+
+    <!-- ====== TABEL DATA APAR ====== -->
+    <div class="custom-card" id="tableSection" style="display:none;">
+        <div class="card-title">
+            <i class="fas fa-table"></i> Data APAR
+            <span class="badge-count" id="totalAparForm">0</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered" id="formTable" style="font-size:12px;">
+                <thead>
+                    <tr>
+                        <th rowspan="2" style="width:30px;vertical-align:middle;">No</th>
+                        <th colspan="4" style="text-align:center;">IDENTITAS ASET</th>
+                        <th rowspan="2" style="vertical-align:middle;">Lokasi</th>
+                        <th rowspan="2" style="vertical-align:middle;">Tgl Isi Ulang</th>
+                        <th rowspan="2" style="vertical-align:middle;">Kadaluarsa</th>
+                        <th colspan="2" style="text-align:center;">HASIL CEK</th>
+                        <th rowspan="2" style="vertical-align:middle;">Tindak Lanjut</th>
+                        <th rowspan="2" style="vertical-align:middle;">Foto</th>
+                        <th rowspan="2" style="vertical-align:middle;">Paraf</th>
+                        <th rowspan="2" style="width:40px;">Aksi</th>
+                    </tr>
+                    <tr>
+                        <th>Kode Aset</th>
+                        <th>Merk</th>
+                        <th>Tipe</th>
+                        <th>Media/Kap.</th>
+                        <th>Tekanan</th>
+                        <th>Perlakuan Fisik</th>
+                    </tr>
+                </thead>
+                <tbody id="formBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ====== CATATAN ====== -->
+    <div class="custom-card">
+        <div class="card-title"><i class="fas fa-pen"></i> Catatan Pelaksanaan</div>
+        <textarea id="catatanForm" class="form-control" rows="3" placeholder="Kendala atau temuan spesifik di lokasi penempatan APAR..."></textarea>
+    </div>
+
+    <div class="text-center mt-3 text-muted" style="font-size:11px;">
+        <small>Dokumen ini setara dengan Formulir Fisik Resmi PT KAI (Persero) — Berlaku untuk audit dan sidak</small>
+    </div>
+
+</main>
+</div>
+
+<!-- ====== BOTTOM NAV ====== -->
+<nav class="bottom-nav">
+    <div class="bnav-items">
+        <a href="dashboard.html" class="bnav-item"><i class="fas fa-house"></i><span>Beranda</span></a>
+        <a href="master-apar.html" class="bnav-item"><i class="fas fa-boxes-stacked"></i><span>Master</span></a>
+        <a href="monitoring.html" class="bnav-item"><i class="fas fa-display"></i><span>Monitoring</span></a>
+        <a href="form-checklist.html" class="bnav-item active"><i class="fas fa-file-pen"></i><span>Form</span></a>
+        <a href="history.html" class="bnav-item"><i class="fas fa-clock-rotate-left"></i><span>Riwayat</span></a>
+        <a href="profile.html" class="bnav-item"><i class="fas fa-user"></i><span>Profil</span></a>
+    </div>
+</nav>
+
+<!-- ====== KAI MODAL ====== -->
+<div class="kai-modal-overlay" id="kaiModal">
+    <div class="kai-modal-box">
+        <div class="kai-modal-header">
+            <div class="modal-icon" id="modalIcon"><i class="fas fa-circle-check"></i></div>
+            <div class="modal-title" id="modalTitle">Berhasil</div>
+        </div>
+        <div class="kai-modal-body" id="modalBody">Data tersimpan.</div>
+        <div class="kai-modal-footer">
+            <button class="btn-modal btn-primary" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ====== MODAL ======
+function showModal(icon, title, msg) {
+    const m = document.getElementById('kaiModal');
+    document.getElementById('modalIcon').className = 'modal-icon icon-' + icon;
+    document.getElementById('modalIcon').innerHTML = icon==='error'?'<i class="fas fa-circle-exclamation"></i>':icon==='success'?'<i class="fas fa-circle-check"></i>':icon==='warning'?'<i class="fas fa-triangle-exclamation"></i>':'<i class="fas fa-circle-info"></i>';
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalBody').textContent = msg;
+    m.classList.add('show');
+}
+function closeModal() { document.getElementById('kaiModal').classList.remove('show'); }
+document.getElementById('kaiModal').addEventListener('click', function(e) { if(e.target===this) closeModal(); });
+document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeModal(); });
+
+// ====== AUTO FILL FROM LOGGED IN USER ======
+const user = JSON.parse(localStorage.getItem('user')) || {};
+const loginUser = JSON.parse(localStorage.getItem('loginUser')) || {};
+const nama = user.nama || loginUser.nama || 'Petugas';
+const nipp = user.nip || loginUser.nipp || '-';
+const daop = user.area || loginUser.daop || 'DAOP 1 - Jakarta';
+const unit = user.unit || loginUser.unit || 'Stasiun';
+
+document.getElementById('noForm').value = 'F.APAR-KAI-' + Date.now().toString().slice(-6);
+document.getElementById('daopDisplay').value = daop;
+document.getElementById('unitDisplay').value = unit;
+document.getElementById('namaPetugasDisplay').value = nama;
+document.getElementById('nippDisplay').value = 'NIPP: ' + nipp;
+document.getElementById('jabatanDisplay').value = 'Petugas Inspektor K3 Fasilitas';
+
+// ====== DATA ======
+let selectedApar = [];
+let formData = [];
+
+function loadAparList() {
+    const tbody = document.getElementById('aparListBody');
+    const search = document.getElementById('searchApar').value.toLowerCase();
+    const media = document.getElementById('filterMediaPilih').value;
+
+    let masterApar = JSON.parse(localStorage.getItem('masterApar')) || [];
+    let scanData = JSON.parse(localStorage.getItem('aparData')) || [];
+
+    let allApar = [...masterApar];
+    scanData.forEach(s => {
+        if(!allApar.find(a => a.kodeAsset === s.kodeAsset)) {
+            allApar.push({ id: s.id, kodeAsset: s.kodeAsset, merk: s.merk, tipe: s.tipe, media: s.media, kapasitas: s.kapasitas, lokasi: s.lokasi, isiUlang: s.isiUlang || '', expired: s.expired || '' });
+        }
+    });
+
+    let filtered = allApar.filter(d => {
+        const s = (d.kodeAsset+' '+d.merk+' '+d.tipe+' '+d.lokasi).toLowerCase();
+        if(search && !s.includes(search)) return false;
+        if(media && d.media !== media) return false;
+        return true;
+    });
+
+    document.getElementById('listCount').textContent = filtered.length;
+    tbody.innerHTML = '';
+    if(filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">Tidak ada APAR. Silakan tambahkan di Master APAR atau scan QR.</td></tr>';
+        return;
+    }
+    filtered.forEach(d => {
+        const checked = selectedApar.find(a => a.kodeAsset === d.kodeAsset) ? 'checked' : '';
+        tbody.innerHTML += `<tr>
+            <td><input type="checkbox" class="apar-check" data-kode="${d.kodeAsset}" data-merk="${d.merk||''}" data-tipe="${d.tipe||''}" data-media="${d.media||''}" data-kap="${d.kapasitas||''}" data-lokasi="${d.lokasi||''}" data-isiulang="${d.isiUlang||''}" data-exp="${d.expired||''}" ${checked} style="width:16px;height:16px;cursor:pointer;"></td>
+            <td><strong>${d.kodeAsset||'-'}</strong></td>
+            <td>${d.merk||'-'}</td>
+            <td>${d.tipe||'-'}</td>
+            <td>${d.media||'-'}</td>
+            <td>${d.kapasitas||'-'}</td>
+            <td>${d.lokasi||'-'}</td>
+        </tr>`;
+    });
+}
+
+function selectAllVisible() {
+    document.querySelectorAll('.apar-check').forEach(c => c.checked = true);
+    updateSelected();
+}
+
+function updateSelected() {
+    selectedApar = [];
+    document.querySelectorAll('.apar-check:checked').forEach(c => {
+        selectedApar.push({
+            kodeAsset: c.dataset.kode, merk: c.dataset.merk, tipe: c.dataset.tipe,
+            media: c.dataset.media, kapasitas: c.dataset.kap, lokasi: c.dataset.lokasi,
+            isiUlang: c.dataset.isiulang, expired: c.dataset.exp
+        });
+    });
+    document.getElementById('selectedCount').textContent = selectedApar.length;
+}
+document.addEventListener('change', function(e) { if(e.target.classList.contains('apar-check')) updateSelected(); });
+
+function addSelectedToForm() {
+    updateSelected();
+    if(selectedApar.length === 0) { showModal('warning','Belum Dipilih','Pilih APAR terlebih dahulu.'); return; }
+    formData = selectedApar.map(d => ({
+        id: Date.now() + Math.random(), kodeAsset: d.kodeAsset, merk: d.merk, tipe: d.tipe,
+        media: d.media, kapasitas: d.kapasitas, lokasi: d.lokasi, isiUlang: d.isiUlang, expired: d.expired,
+        tekanan: 'Hijau', fisik: 'Terawat - digantung di dinding', tindak: '', foto: '', ttd: ''
+    }));
+    document.getElementById('tableSection').style.display = 'block';
+    renderTable();
+    showModal('success','Ditambahkan', selectedApar.length + ' APAR berhasil ditambahkan.');
+}
+
+function renderTable() {
+    const tbody = document.getElementById('formBody');
+    tbody.innerHTML = '';
+    document.getElementById('totalAparForm').textContent = formData.length + ' Data';
+    if(formData.length === 0) { tbody.innerHTML = '<tr><td colspan="14" class="text-center text-muted py-3">Belum ada data.</td></tr>'; return; }
+    formData.forEach((d,i) => {
+        const tekananOpt = `<select class="form-select form-select-sm" onchange="updateFormData(${i},'tekanan',this.value)" style="font-size:11px;"><option value="Hijau" ${d.tekanan==='Hijau'?'selected':''}>🟢 Hijau</option><option value="Merah" ${d.tekanan==='Merah'?'selected':''}>🔴 Merah</option></select>`;
+        const fisikOpt = `<select class="form-select form-select-sm" onchange="updateFormData(${i},'fisik',this.value)" style="font-size:11px;"><option ${d.fisik==='Terawat - digantung di dinding'?'selected':''}>Terawat - digantung di dinding</option><option ${d.fisik==='Diletakkan di bawah'?'selected':''}>Diletakkan di bawah</option><option ${d.fisik==='Terhalang barang lain'?'selected':''}>Terhalang barang lain</option><option ${d.fisik==='Segel rusak'?'selected':''}>Segel rusak</option><option ${d.fisik==='Dalam Perbaikan/Refill Vendor'?'selected':''}>Dalam Perbaikan/Refill Vendor</option></select>`;
+        const fotoHtml = `<label style="cursor:pointer;color:var(--kai-dark-blue);font-size:18px;"><i class="fas fa-camera"></i><input type="file" accept="image/*" style="display:none;" onchange="captureFoto(${i},event)"></label><div id="fotoPreview${i}" style="display:${d.foto?'block':'none'};margin-top:2px;"><img src="${d.foto||''}" style="width:40px;height:40px;border-radius:4px;object-fit:cover;cursor:pointer;" onclick="window.open('${d.foto}')"></div>`;
+        const sigHtml = `<canvas id="sigCanvas${i}" width="80" height="30" style="border:1px solid #ddd;border-radius:3px;cursor:crosshair;touch-action:none;" onmousedown="startSig(${i},event)" onmousemove="drawSig(${i},event)" onmouseup="stopSig(${i})" ontouchstart="startSigTouch(${i},event)" ontouchmove="drawSigTouch(${i},event)" ontouchend="stopSig(${i})"></canvas><br><button class="btn btn-sm" style="font-size:8px;padding:1px 4px;border:1px solid #ddd;background:#fff;" onclick="clearSig(${i})">Hapus</button>`;
+        tbody.innerHTML += `<tr>
+            <td style="text-align:center;">${i+1}</td>
+            <td><strong>${d.kodeAsset||'-'}</strong></td>
+            <td>${d.merk||'-'}</td>
+            <td>${d.tipe||'-'}</td>
+            <td>${d.media||'-'} / ${d.kapasitas||'-'}</td>
+            <td>${d.lokasi||'-'}</td>
+            <td style="font-size:11px;">${d.isiUlang||'-'}</td>
+            <td style="font-size:11px;">${d.expired||'-'}</td>
+            <td>${tekananOpt}</td>
+            <td>${fisikOpt}</td>
+            <td><input class="form-control form-control-sm" style="font-size:11px;min-width:80px;" value="${d.tindak}" onchange="updateFormData(${i},'tindak',this.value)" placeholder="..."></td>
+            <td style="text-align:center;">${fotoHtml}</td>
+            <td style="text-align:center;">${sigHtml}</td>
+            <td style="text-align:center;"><button class="btn btn-sm btn-outline-danger" onclick="hapusFormData(${i})" style="font-size:10px;padding:2px 6px;"><i class="fas fa-trash"></i></button></td>
+        </tr>`;
+    });
+}
+
+function updateFormData(idx, field, val) { formData[idx][field] = val; }
+function hapusFormData(idx) { formData.splice(idx,1); renderTable(); }
+
+// ====== FOTO ======
+function captureFoto(idx, event) {
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) { formData[idx].foto = e.target.result; renderTable(); };
+    reader.readAsDataURL(file);
+}
+
+// ====== SIGNATURE ======
+let sigData = {};
+function startSig(idx, e) {
+    const canvas = document.getElementById('sigCanvas'+idx);
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    sigData[idx] = { drawing: true, ctx };
+    ctx.beginPath(); ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+}
+function drawSig(idx, e) {
+    if(!sigData[idx] || !sigData[idx].drawing) return;
+    const canvas = document.getElementById('sigCanvas'+idx);
+    const ctx = sigData[idx].ctx;
+    const rect = canvas.getBoundingClientRect();
+    ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#1a1a2e';
+    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+}
+function stopSig(idx) {
+    if(sigData[idx]) sigData[idx].drawing = false;
+    formData[idx].ttd = document.getElementById('sigCanvas'+idx).toDataURL();
+}
+function startSigTouch(idx, e) {
+    e.preventDefault(); const t = e.touches[0];
+    const canvas = document.getElementById('sigCanvas'+idx);
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    sigData[idx] = { drawing: true, ctx };
+    ctx.beginPath(); ctx.moveTo(t.clientX - rect.left, t.clientY - rect.top);
+}
+function drawSigTouch(idx, e) {
+    e.preventDefault(); if(!sigData[idx]||!sigData[idx].drawing) return;
+    const t = e.touches[0]; const canvas = document.getElementById('sigCanvas'+idx);
+    const ctx = sigData[idx].ctx; const rect = canvas.getBoundingClientRect();
+    ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#1a1a2e';
+    ctx.lineTo(t.clientX - rect.left, t.clientY - rect.top); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(t.clientX - rect.left, t.clientY - rect.top);
+}
+function clearSig(idx) {
+    const canvas = document.getElementById('sigCanvas'+idx);
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    formData[idx].ttd = '';
+}
+
+// ====== EXPORT EXCEL ======
+function exportExcel() {
+    if(formData.length === 0) { showModal('warning','Data Kosong','Pilih APAR terlebih dahulu.'); return; }
+    const data = formData.map((d,i)=>({
+        No: i+1, 'Kode Aset': d.kodeAsset||'-', Merk: d.merk||'-', Tipe: d.tipe||'-',
+        Media: d.media||'-', Kapasitas: d.kapasitas||'-', Lokasi: d.lokasi||'-',
+        'Tgl Isi Ulang': d.isiUlang||'-', Kadaluarsa: d.expired||'-',
+        Tekanan: d.tekanan||'-', 'Perlakuan Fisik': d.fisik||'-', 'Tindak Lanjut': d.tindak||'-'
+    }));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), 'Data APAR');
+    XLSX.writeFile(wb, 'Form-Checklist-APAR-KAI.xlsx');
+    showModal('success','Berhasil','File Excel berhasil diunduh.');
+}
+
+// ====== EXPORT PDF ======
+function exportPDF() {
+    if(formData.length === 0) { showModal('warning','Data Kosong','Pilih APAR terlebih dahulu.'); return; }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('landscape', 'mm', 'a4');
+    const pw = doc.internal.pageSize.getWidth();
+    const ph = doc.internal.pageSize.getHeight();
+    let y = 12;
+    doc.setFont('helvetica','bold'); doc.setFontSize(16);
+    doc.text('PT KERETA API INDONESIA (Persero)', pw/2, y, {align:'center'}); y+=7;
+    doc.setFontSize(12); doc.text('FORMULIR CHECKLIST PEMANTAUAN APAR', pw/2, y, {align:'center'}); y+=5;
+    doc.setFontSize(9); doc.setFont('helvetica','normal');
+    doc.text('Dokumen Resmi Inspeksi Alat Pemadam Api Ringan', pw/2, y, {align:'center'}); y+=3;
+    doc.setDrawColor(0,56,104); doc.line(15, y, pw-15, y); y+=6;
+    doc.setFontSize(9);
+    doc.text('No: '+document.getElementById('noForm').value, 15, y);
+    doc.text('Tgl: '+(document.getElementById('tglPeriksa').value||'-'), pw/2, y);
+    doc.text('DAOP: '+document.getElementById('daopDisplay').value, pw-15, y, {align:'right'}); y+=5;
+    doc.text('Unit: '+document.getElementById('unitDisplay').value, 15, y);
+    doc.text('Pemeriksa: '+document.getElementById('namaPetugasDisplay').value+' ('+document.getElementById('nippDisplay').value+')', pw/2, y); y+=8;
+    doc.setFont('helvetica','bold'); doc.setFontSize(10);
+    doc.text('DATA APAR', 15, y); y+=5;
+    doc.setFontSize(7);
+    const hd=['No','Kode Aset','Merk','Tipe','Media/Kap','Lokasi','Tgl Isi Ulang','Kadaluarsa','Tekanan','Perlakuan','Tindak Lanjut'];
+    const wd=[6,18,18,18,16,22,16,16,14,20,22];
+    let x=15;
+    doc.setFont('helvetica','bold');
+    hd.forEach((h,i)=>{doc.text(h,x+wd[i]/2,y,{align:'center'});x+=wd[i];}); y+=4;
+    doc.line(15,y-1,pw-15,y-1); doc.setFont('helvetica','normal');
+    formData.forEach((d,i)=>{
+        if(y>ph-20){doc.addPage();y=15;}
+        x=15;
+        [i+1, d.kodeAsset||'-', d.merk||'-', d.tipe||'-', (d.media||'-')+'/'+(d.kapasitas||'-'), d.lokasi||'-', d.isiUlang||'-', d.expired||'-', d.tekanan||'-', d.fisik||'-', d.tindak||'-'].forEach((v,j)=>{doc.text(v+'',x+wd[j]/2,y,{align:'center'});x+=wd[j];});
+        y+=4;
+    }); y+=6;
+    doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text('Catatan Pelaksanaan:',15,y); y+=4; doc.setFont('helvetica','normal'); doc.setFontSize(8);
+    doc.text(doc.splitTextToSize(document.getElementById('catatanForm').value||'-',pw-30),15,y);
+    doc.setFontSize(7); doc.setTextColor(150);
+    doc.text('Dicetak dari Sistem Monitoring APAR - PT KAI (Persero) | Dokumen setara dengan Formulir Fisik Resmi', pw/2, ph-8, {align:'center'});
+    doc.save('Form-Checklist-APAR-KAI.pdf');
+    showModal('success','Berhasil','File PDF berhasil diunduh.');
+}
+
+// ====== INIT ======
+loadAparList();
+</script>
+
+<!-- ================= LOGOUT CONFIRMATION MODAL ================= -->
+<div class="kai-modal-overlay" id="logoutModal">
+    <div class="kai-modal-box">
+        <div class="kai-modal-header">
+            <div class="modal-icon icon-warning"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="modal-title">Konfirmasi Logout</div>
+        </div>
+        <div class="kai-modal-body">Apakah Anda yakin ingin keluar dari sistem?</div>
+        <div class="kai-modal-footer" style="gap:10px;justify-content:center;">
+            <button class="btn-modal btn-secondary" onclick="closeLogoutModal()">Batal</button>
+            <button class="btn-modal btn-primary" onclick="doLogout()">Ya, Logout</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ====== LOGOUT ======
+function confirmLogout() {
+    document.getElementById('logoutModal').classList.add('show');
+}
+function closeLogoutModal() {
+    document.getElementById('logoutModal').classList.remove('show');
+}
+function doLogout() {
+    localStorage.removeItem('login');
+    localStorage.removeItem('user');
+    localStorage.removeItem('loginUser');
+    window.location.href = '../login.html';
+}
+document.getElementById('logoutModal').addEventListener('click', function(e) { if(e.target===this) closeLogoutModal(); });
+document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeLogoutModal(); });
+</script>
+
+</body>
+</html>

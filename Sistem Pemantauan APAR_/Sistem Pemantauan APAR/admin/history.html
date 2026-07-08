@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Riwayat Inspeksi | Admin - Sistem Monitoring APAR</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/user.css">
+<style>
+:root { --admin-sidebar: #1a1a2e; --admin-accent: #F58220; }
+.admin-wrapper { display: flex; min-height: 100vh; }
+.admin-sidebar { width: 250px; background: var(--admin-sidebar); color: #fff; position: fixed; top: 0; left: 0; bottom: 0; display: flex; flex-direction: column; z-index: 1000; }
+.admin-sidebar .logo-area { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,.1); }
+.admin-sidebar .logo-area img { width: 80px; margin-bottom: 8px; }
+.admin-sidebar .logo-area h5 { font-size: 15px; font-weight: 700; color: #fff; }
+.admin-sidebar .logo-area small { color: rgba(255,255,255,.5); font-size: 10px; }
+.admin-sidebar .menu { padding: 12px; flex: 1; }
+.admin-sidebar .menu a { display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,.7); text-decoration: none; padding: 11px 14px; border-radius: 10px; margin-bottom: 4px; font-size: 13px; font-weight: 500; transition: all .2s; }
+.admin-sidebar .menu a i { width: 20px; text-align: center; font-size: 15px; }
+.admin-sidebar .menu a:hover { background: rgba(255,255,255,.08); color: #fff; }
+.admin-sidebar .menu a.active { background: var(--admin-accent); color: #fff; font-weight: 600; }
+.admin-sidebar .sidebar-footer { padding: 15px 20px; border-top: 1px solid rgba(255,255,255,.1); }
+.admin-sidebar .sidebar-footer a { color: rgba(255,255,255,.6); text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+.admin-sidebar .sidebar-footer a:hover { color: #fff; }
+.admin-content { margin-left: 250px; flex: 1; padding: 25px 30px; background: #F5F7FA; min-height: 100vh; }
+.admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.admin-header h2 { font-size: 24px; font-weight: 800; color: #1a1a2e; margin: 0; }
+.admin-header p { color: #888; font-size: 13px; margin: 2px 0 0; }
+.table th { background: #1a1a2e !important; color: #fff; font-size: 12px; padding: 10px 12px; }
+.table td { font-size: 12px; padding: 10px 12px; vertical-align: middle; }
+@media(max-width:768px) { .admin-sidebar { display: none; } .admin-content { margin-left: 0; padding: 16px; } }
+</style>
+</head>
+<body>
+<div class="admin-wrapper">
+    <aside class="admin-sidebar">
+        <div>
+            <div class="logo-area">
+                <img src="../assets/img/logo kai.png" alt="KAI">
+                <h5>Admin Panel</h5>
+                <small>Sistem Monitoring APAR</small>
+            </div>
+            <nav class="menu">
+                <a href="index.html"><i class="fas fa-house"></i> Dashboard</a>
+                <a href="users.html"><i class="fas fa-users"></i> Kelola Petugas</a>
+                <a href="monitoring.html"><i class="fas fa-fire-extinguisher"></i> Data APAR</a>
+                <a href="history.html" class="active"><i class="fas fa-clock-rotate-left"></i> Riwayat Inspeksi</a>
+            </nav>
+        </div>
+        <div class="sidebar-footer">
+            <a href="#" onclick="confirmLogout()"><i class="fas fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+    <main class="admin-content">
+        <div class="admin-header">
+            <div>
+                <h2>Riwayat Inspeksi</h2>
+                <p>Semua session inspeksi APAR dari seluruh petugas</p>
+            </div>
+        </div>
+
+        <!-- FILTER -->
+        <div class="custom-card">
+            <div class="card-title"><i class="fas fa-sliders"></i> Filter Data</div>
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <label>No. Referensi</label>
+                    <input type="text" id="filterRef" class="form-control" placeholder="Cari no ref..." oninput="renderTable()">
+                </div>
+                <div class="col-md-3">
+                    <label>Tanggal</label>
+                    <input type="date" id="filterTgl" class="form-control" onchange="renderTable()">
+                </div>
+                <div class="col-md-3">
+                    <label>Business Area</label>
+                    <select id="filterArea" class="form-select" onchange="renderTable()">
+                        <option value="">Semua Area</option>
+                        <option>DAOP 1 - Jakarta</option><option>DAOP 2 - Bandung</option>
+                        <option>DAOP 3 - Cirebon</option><option>DAOP 4 - Semarang</option>
+                        <option>DAOP 5 - Purwokerto</option><option>DAOP 6 - Yogyakarta</option>
+                        <option>DAOP 7 - Madiun</option><option>DAOP 8 - Surabaya</option>
+                        <option>DAOP 9 - Jember</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Bulan</label>
+                    <input type="month" id="filterBulan" class="form-control" onchange="renderTable()">
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="custom-card p-0" style="overflow:hidden;">
+            <div class="card-title" style="margin:0;padding:14px 18px;border-bottom:1px solid var(--kai-border);border-radius:12px 12px 0 0;">
+                <i class="fas fa-clock-rotate-left"></i> Session Inspeksi
+                <span class="badge-count" id="totalSessions">0</span>
+            </div>
+            <div class="table-responsive" style="overflow-x:auto;white-space:nowrap;">
+                <table class="table table-hover align-middle" style="font-size:12px;min-width:800px;margin-bottom:0;">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>No Referensi</th>
+                            <th>Tanggal</th>
+                            <th>Business Area</th>
+                            <th>Bulan</th>
+                            <th>Total APAR</th>
+                            <th>Pemeriksa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+function getSessions() {
+    const aparData = JSON.parse(localStorage.getItem('aparData')) || [];
+    let map = {};
+    aparData.forEach((item, index) => {
+        const sid = item.noRef || item.sessionId || "SESSION-" + index;
+        if (!map[sid]) {
+            map[sid] = { 
+                sessionId: sid, 
+                noRef: item.noRef || "-", 
+                tanggal: item.tglCek || item.tanggal || "-", 
+                businessArea: item.businessArea || "-", 
+                bulan: item.bulan || "-", 
+                pemeriksa: item.pemeriksaNama || item.namaPetugas || "-",
+                total: 0 
+            };
+        }
+        map[sid].total++;
+    });
+    return Object.values(map);
+}
+
+function renderTable() {
+    const filterRef = document.getElementById('filterRef').value.toLowerCase();
+    const filterTgl = document.getElementById('filterTgl').value;
+    const filterArea = document.getElementById('filterArea').value.toLowerCase();
+    const filterBulan = document.getElementById('filterBulan').value;
+    
+    let sessions = getSessions();
+    
+    sessions = sessions.filter(s => {
+        if(filterRef && !s.noRef.toLowerCase().includes(filterRef)) return false;
+        if(filterTgl && s.tanggal !== filterTgl) return false;
+        if(filterArea && !s.businessArea.toLowerCase().includes(filterArea)) return false;
+        if(filterBulan && s.bulan !== filterBulan) return false;
+        return true;
+    });
+    
+    const tbody = document.getElementById('historyBody');
+    tbody.innerHTML = '';
+    document.getElementById('totalSessions').textContent = sessions.length;
+    if(sessions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">Belum ada data</td></tr>';
+        return;
+    }
+    sessions.reverse().forEach((s, i) => {
+        tbody.innerHTML += '<tr><td>'+(i+1)+'</td><td><strong>'+s.noRef+'</strong></td><td>'+s.tanggal+'</td><td>'+s.businessArea+'</td><td>'+s.bulan+'</td><td><span class="badge" style="background:#003868;">'+s.total+'</span></td><td>'+s.pemeriksa+'</td></tr>';
+    });
+}
+
+renderTable();
+</script>
+
+<!-- ================= LOGOUT CONFIRMATION MODAL ================= -->
+<div class="kai-modal-overlay" id="logoutModal">
+    <div class="kai-modal-box">
+        <div class="kai-modal-header">
+            <div class="modal-icon icon-warning"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="modal-title">Konfirmasi Logout</div>
+        </div>
+        <div class="kai-modal-body">Apakah Anda yakin ingin keluar dari sistem?</div>
+        <div class="kai-modal-footer" style="gap:10px;justify-content:center;">
+            <button class="btn-modal btn-secondary" onclick="closeLogoutModal()">Batal</button>
+            <button class="btn-modal btn-primary" onclick="doLogout()">Ya, Logout</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmLogout() {
+    document.getElementById('logoutModal').classList.add('show');
+}
+function closeLogoutModal() {
+    document.getElementById('logoutModal').classList.remove('show');
+}
+function doLogout() {
+    localStorage.removeItem('login');
+    localStorage.removeItem('user');
+    window.location.href = '../login.html';
+}
+document.getElementById('logoutModal').addEventListener('click', function(e) { if(e.target===this) closeLogoutModal(); });
+document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeLogoutModal(); });
+</script>
+
+</body>
+</html>
